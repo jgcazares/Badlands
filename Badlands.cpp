@@ -346,9 +346,9 @@ int main() {
 
 	//set the X Y W H for the rectangle
 	TitlePos.x = 264;
-	TitlePos.y = 73;
-	TitlePos.w = 532;
-	TitlePos.h = 71;
+	TitlePos.y = 30;
+	TitlePos.w = 384;
+	TitlePos.h = 163;
 
 	////*********************** TITLE END
 
@@ -380,10 +380,10 @@ int main() {
 	SDL_Rect oneNPos;
 
 	//set the X Y W H for the rectangle
-	oneNPos.x = 380;
+	oneNPos.x = 420;
 	oneNPos.y = 261;
-	oneNPos.w = 311;
-	oneNPos.h = 42;
+	oneNPos.w = 104;
+	oneNPos.h = 80;
 
 	////////**********************PLAYER ONE END
 
@@ -417,10 +417,10 @@ int main() {
 	SDL_Rect instructNPos;
 
 	//set the X Y W H for the rectangle
-	instructNPos.x = 351;
+	instructNPos.x = 320;
 	instructNPos.y = 424;
-	instructNPos.w = 374;
-	instructNPos.h = 42;
+	instructNPos.w = 320;
+	instructNPos.h = 68;
 
 	//////////************************ISTRUCTIONS END************************
 
@@ -452,10 +452,10 @@ int main() {
 	SDL_Rect backNPos;
 
 	//set the X Y W H for the rectangle
-	backNPos.x = 360;
+	backNPos.x = 350;
 	backNPos.y = 343;
-	backNPos.w = 352;
-	backNPos.h = 42;
+	backNPos.w = 252;
+	backNPos.h = 71;
 
 	//////////************************BACK STORY END************************
 
@@ -488,10 +488,10 @@ int main() {
 	SDL_Rect quitNPos;
 
 	//set the X Y W H for the rectangle
-	quitNPos.x = 391;
+	quitNPos.x = 360;
 	quitNPos.y = 503;
-	quitNPos.w = 288;
-	quitNPos.h = 42;
+	quitNPos.w = 232;
+	quitNPos.h = 71;
 
 	//////////************************QUIT END************************
 
@@ -522,14 +522,14 @@ int main() {
 	//set the X Y W H for the rectangle
 	winPos.x = 240;
 	winPos.y = 288;
-	winPos.w = 596;
-	winPos.h = 114;
+	winPos.w = 589;
+	winPos.h = 159;
 	/////////////*****************WIN END****************************
 
 
 	/////*************PLAY AGAIN graphics***********************
 	// create a SDL surface to hold the background image
-	surface = IMG_Load((images_dir + "Play_N.png").c_str());
+	surface = IMG_Load((images_dir + "play again.png").c_str());
 
 	//create an sdl texture
 	SDL_Texture *playN;
@@ -541,7 +541,7 @@ int main() {
 	SDL_FreeSurface(surface);
 
 	// create a SDL surface to hold the background image
-	surface = IMG_Load((images_dir + "Play_O.png").c_str());
+	surface = IMG_Load((images_dir + "play again RED.png").c_str());
 
 	//create an sdl texture
 	SDL_Texture *playO;
@@ -556,10 +556,10 @@ int main() {
 	SDL_Rect playNPos;
 
 	//set the X Y W H for the rectangle
-	playNPos.x = 875;
-	playNPos.y = 702;
-	playNPos.w = 125;
-	playNPos.h = 40;
+	playNPos.x = 700;
+	playNPos.y = 680;
+	playNPos.w = 297;
+	playNPos.h = 75;
 	////*********************** win menu end***********************************
 
 
@@ -582,10 +582,10 @@ int main() {
 	SDL_Rect losePos;
 
 	//set the X Y W H for the rectangle
-	losePos.x = 240;
+	losePos.x = 320;
 	losePos.y = 288;
-	losePos.w = 596;
-	losePos.h = 114;
+	losePos.w = 438;
+	losePos.h = 75;
 	/////////////*****************LOSE END****************************
 
 
@@ -619,7 +619,7 @@ int main() {
 
 	/////*************small menu graphics***********************
 	// create a SDL surface to hold the background image
-	surface = IMG_Load((images_dir + "menu_N.png").c_str());
+	surface = IMG_Load((images_dir + "menu.png").c_str());
 
 	//create an sdl texture
 	SDL_Texture *menuN;
@@ -631,7 +631,7 @@ int main() {
 	SDL_FreeSurface(surface);
 
 	// create a SDL surface to hold the background image
-	surface = IMG_Load((images_dir + "menu_O.png").c_str());
+	surface = IMG_Load((images_dir + "menuRED.png").c_str());
 
 	//create an sdl texture
 	SDL_Texture *menuO;
@@ -646,17 +646,17 @@ int main() {
 	SDL_Rect menuPos;
 
 	//set the X Y W H for the rectangle
-	menuPos.x = 22;
-	menuPos.y = 702;
-	menuPos.w = 145;
-	menuPos.h = 41;
+	menuPos.x = 30;
+	menuPos.y = 680;
+	menuPos.w = 272;
+	menuPos.h = 65;
 
 
 	// **************** Set up the gamestates *****************
 	enum GameState {MENU, PLAY, INSTRUCTIONS, BACKSTORY, WIN, LOSE, LEVEL2};
 
 	//var enum to track where we are in game
-	GameState gameState = MENU;
+	GameState gameState = WIN;
 
 	//bool values to allow movement through the individual states
 	bool menu, play, instructions, backstory, win , lose, level2;
@@ -807,7 +807,7 @@ int main() {
 				SDL_RenderCopy(renderer, bkgd2, NULL, &bkgd2Pos);
 
 				//draw the title image
-				SDL_RenderCopy(renderer, title, NULL, &cursorPos);
+				SDL_RenderCopy(renderer, title, NULL, &TitlePos);
 
 				/////////*******************NEW******************************************************
 				//draw the player 1 button
@@ -824,7 +824,7 @@ int main() {
 					SDL_RenderCopy(renderer, instructO, NULL, &instructNPos);
 				}
 
-				//draw the backstory 2 button
+				//draw the back story 2 button
 				if(players2Over){
 					SDL_RenderCopy(renderer, backN, NULL, &backNPos);
 				}else{
@@ -835,7 +835,7 @@ int main() {
 				if(quitOver){
 					SDL_RenderCopy(renderer, quitN, NULL, &quitNPos);
 				}else{
-					SDL_RenderCopy(renderer, quitN, NULL, &quitNPos);
+					SDL_RenderCopy(renderer, quitO, NULL, &quitNPos);
 				}
 
 
@@ -1019,6 +1019,8 @@ int main() {
 
 
 		case WIN:
+			alreadyOver = false;
+			win = true;
 
 			win = true;
 			cout << "The Gamestate is Win Screen" << endl;
@@ -1029,6 +1031,11 @@ int main() {
 
 			while(win)
 			{
+				//set up the frame rate for the section or case
+				thisTime = SDL_GetTicks();
+				deltaTime = (float)(thisTime - lastTime) / 1000;
+				lastTime = thisTime;
+
 				//check for input
 				if(SDL_PollEvent(&e))
 				{
@@ -1051,8 +1058,21 @@ int main() {
 							//if A button
 							if(e.cbutton.button == SDL_CONTROLLER_BUTTON_A)
 							{
-								win = false;
-								gameState = MENU;
+								//if player chooses main menu
+								if(menuOver){
+									Mix_PlayChannel(-1, pressedSound, 0);
+									win = false;
+									gameState = MENU;
+									menuOver = false;
+								}
+
+								//if player chooses to play again
+								if(playOver){
+									Mix_PlayChannel(-1, pressedSound, 0);
+									win = false;
+									gameState = PLAY;
+									playOver = false;
+								}
 							}
 							//if A button
 							if(e.cbutton.button == SDL_CONTROLLER_BUTTON_B)
@@ -1063,14 +1083,63 @@ int main() {
 
 						}//end joystick check
 						break;
+					case SDL_CONTROLLERAXISMOTION:
+
+						moveCursor(e.caxis);
+
+						break;
+
 					}// end button input check
 				}//end win poll event
+
+
+				//****************************UPDATE SECTION*******************************
+				UpdateBackground(deltaTime);
+
+				//curosr
+				UpdateCursor(deltaTime);
+
+				menuOver = SDL_HasIntersection(&activePos, &menuPos);
+				playOver = SDL_HasIntersection(&activePos, &playNPos);
+
+
+
+				//if the cursor is over a button, play the over sound
+				if(menuOver || playOver){
+					if(alreadyOver == false){
+						Mix_PlayChannel(-1, overSound, 0);
+						alreadyOver = true;
+					}
+				}
+
+				//if the cursor is not over any button reset the alreadyOver var
+				if(!menuOver && !playOver){
+					alreadyOver = false;
+				}
 
 				// ************************ START THE SDL DRAW PROCESS *****************
 				//clear the SDL_Render target
 				SDL_RenderClear(renderer);
 
-				//draw the background
+				//draw the win text image
+				SDL_RenderCopy(renderer, winText, NULL, &winPos);
+
+
+				if(menuOver){
+					SDL_RenderCopy(renderer, menuO, NULL, &menuPos);
+				}else{
+					SDL_RenderCopy(renderer, menuN, NULL, &menuPos);
+				}
+
+
+				if(playOver){
+					SDL_RenderCopy(renderer, playO, NULL, &playNPos);
+				}else{
+					SDL_RenderCopy(renderer, playN, NULL, &playNPos);
+				}
+
+				//draw the cursor  cursor
+				SDL_RenderCopy(renderer, cursor, NULL, &cursorPos);
 
 
 				//present new buffer to the screen
@@ -1081,7 +1150,9 @@ int main() {
 
 		case LOSE:
 
+			alreadyOver = false;
 			lose = true;
+
 			cout << "The Gamestate is lose Screen" << endl;
 			cout << "Press the A Button for Main Menu" << endl;
 			cout << "Press the B Button to Quit Game" << endl;
@@ -1090,6 +1161,12 @@ int main() {
 
 			while(lose)
 			{
+
+				//set up the frame rate for the section or case
+				thisTime = SDL_GetTicks();
+				deltaTime = (float)(thisTime - lastTime) / 1000;
+				lastTime = thisTime;
+
 				//check for input
 				if(SDL_PollEvent(&e))
 				{
@@ -1112,8 +1189,21 @@ int main() {
 							//if A button
 							if(e.cbutton.button == SDL_CONTROLLER_BUTTON_A)
 							{
-								lose = false;
-								gameState = MENU;
+								//if player chooses main menu
+								if(menuOver){
+									Mix_PlayChannel(-1, pressedSound, 0);
+									win = false;
+									gameState = MENU;
+									menuOver = false;
+								}
+
+								//if player chooses to play again
+								if(playOver){
+									Mix_PlayChannel(-1, pressedSound, 0);
+									win = false;
+									gameState = PLAY;
+									playOver = false;
+								}
 							}
 							//if A button
 							if(e.cbutton.button == SDL_CONTROLLER_BUTTON_B)
@@ -1124,14 +1214,61 @@ int main() {
 
 						}//end joystick check
 						break;
+
+					case SDL_CONTROLLERAXISMOTION:
+
+						moveCursor(e.caxis);
+						break;
 					}// end button input check
 				}//end lose poll event
+
+
+				//****************************UPDATE SECTION*******************************
+				UpdateBackground(deltaTime);
+
+				//curosr
+				UpdateCursor(deltaTime);
+
+				menuOver = SDL_HasIntersection(&activePos, &menuPos);
+				playOver = SDL_HasIntersection(&activePos, &playNPos);
+
+
+				//if the cursor is over a button, play the over sound
+				if(menuOver || playOver){
+					if(alreadyOver == false){
+						Mix_PlayChannel(-1, overSound, 0);
+						alreadyOver = true;
+					}
+				}
+
+				//if the cursor is not over any button reset the alreadyOver var
+				if(!menuOver && !playOver){
+					alreadyOver = false;
+				}
 
 				// ************************ START THE SDL DRAW PROCESS *****************
 				//clear the SDL_Render target
 				SDL_RenderClear(renderer);
 
-				//draw the background
+				//draw the win text image
+				SDL_RenderCopy(renderer, loseText, NULL, &losePos);
+
+				// ******************************* NEW ***********************************************
+				if(menuOver){
+					SDL_RenderCopy(renderer, menuO, NULL, &menuPos);
+				}else{
+					SDL_RenderCopy(renderer, menuN, NULL, &menuPos);
+				}
+
+				if(playOver){
+					SDL_RenderCopy(renderer, playO, NULL, &playNPos);
+				}else{
+					SDL_RenderCopy(renderer, playN, NULL, &playNPos);
+				}
+				// ******************************* NEW ***********************************************
+
+				//draw the cursor  image
+				SDL_RenderCopy(renderer, cursor, NULL, &cursorPos);
 
 
 				//present new buffer to the screen
