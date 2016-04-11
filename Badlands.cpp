@@ -589,10 +589,6 @@ int main() {
 	/////////////*****************LOSE END****************************
 
 
-
-
-
-
 	/////*****************************instructions menu START**************************
 
 	/////*************instuctions graphics***********************
@@ -651,15 +647,62 @@ int main() {
 	menuPos.w = 272;
 	menuPos.h = 65;
 
+	// ******************** LEVEL 1 BACKGROUND *********************
+	// create a SDL surface to hold the background image
+	surface = IMG_Load((images_dir + "level1.png").c_str());
+
+	//create an sdl texture
+	SDL_Texture *level1;
+
+	//place the surface into the texture bkgd1
+	level1 = SDL_CreateTextureFromSurface(renderer, surface);
+
+	//free the sdl surface
+	SDL_FreeSurface(surface);
+
+	//create sdl rect for title
+	SDL_Rect level1Pos;
+
+	//set the X Y W H for the rectangle
+	level1Pos.x = 0;
+	level1Pos.y = 0;
+	level1Pos.w = 1024;
+	level1Pos.h = 768;
+	// ******************** level 1 background *********************
+
+
+	// ******************** LEVEL 1 BACKGROUND *********************
+	// create a SDL surface to hold the background image
+	surface = IMG_Load((images_dir + "level2.png").c_str());
+
+	//create an sdl texture
+	SDL_Texture *level2;
+
+	//place the surface into the texture bkgd1
+	level2 = SDL_CreateTextureFromSurface(renderer, surface);
+
+	//free the sdl surface
+	SDL_FreeSurface(surface);
+
+	//create sdl rect for title
+	SDL_Rect level2Pos;
+
+	//set the X Y W H for the rectangle
+	level2Pos.x = 0;
+	level2Pos.y = 0;
+	level2Pos.w = 1024;
+	level2Pos.h = 768;
+	// ******************** level 1 background *********************
+
 
 	// **************** Set up the gamestates *****************
 	enum GameState {MENU, PLAY, INSTRUCTIONS, BACKSTORY, WIN, LOSE, LEVEL2};
 
 	//var enum to track where we are in game
-	GameState gameState = WIN;
+	GameState gameState = PLAY;
 
 	//bool values to allow movement through the individual states
-	bool menu, play, instructions, backstory, win , lose, level2;
+	bool menu, play, instructions, backstory, win , lose, Level2;
 
 
 
@@ -906,6 +949,7 @@ int main() {
 		case PLAY:
 
 			play = true;
+
 			cout << "The Gamestate is Play" << endl;
 			cout << "Press the A Button for Win Screen" << endl;
 			cout << "Press the B Button for Lose Screen" << endl;
@@ -913,6 +957,11 @@ int main() {
 
 			while(play)
 			{
+				//create delta time for framerate independence
+				thisTime = SDL_GetTicks();
+				deltaTime = (float)(thisTime - lastTime)/ 1000;
+				lastTime = thisTime;
+
 				//check for input
 				if(SDL_PollEvent(&e))
 				{
@@ -950,11 +999,16 @@ int main() {
 					}// end button input check
 				}//end play poll event
 
+
+				// ************************** UPDATES *******************************
+				UpdateBackground(deltaTime);
+
 				// ************************ START THE SDL DRAW PROCESS *****************
 				//clear the SDL_Render target
 				SDL_RenderClear(renderer);
 
-				//draw the background
+				//draw the bkgd image
+				SDL_RenderCopy(renderer, level1, NULL, &level1Pos);
 
 
 				//present new buffer to the screen
@@ -1022,7 +1076,6 @@ int main() {
 			alreadyOver = false;
 			win = true;
 
-			win = true;
 			cout << "The Gamestate is Win Screen" << endl;
 			cout << "Press the A Button for Main Menu" << endl;
 			cout << "Press the B Button to Quit Game" << endl;
@@ -1278,7 +1331,8 @@ int main() {
 
 		case LEVEL2:
 
-			level2 = true;
+			Level2 = true;
+
 			cout << "The Gamestate is Play" << endl;
 			cout << "Press the A Button for Win Screen" << endl;
 			cout << "Press the B Button for Lose Screen" << endl;
@@ -1293,7 +1347,7 @@ int main() {
 					if(e.type == SDL_QUIT)
 					{
 						quit = true;
-						level2 = false;
+						Level2 = false;
 						break;
 					}
 
@@ -1308,14 +1362,14 @@ int main() {
 							//if A button
 							if(e.cbutton.button == SDL_CONTROLLER_BUTTON_A)
 							{
-								level2 = false;
+								Level2 = false;
 								gameState = WIN;
 							}
 
 							//if b button
 							if(e.cbutton.button == SDL_CONTROLLER_BUTTON_B)
 							{
-								level2 = false;
+								Level2 = false;
 								gameState = LOSE;
 							}
 						}//end joystick check
