@@ -10,6 +10,9 @@ float deltaTime = 0.0;
 int thisTime = 0;
 int lastTime = 0;
 
+#include "player.h"
+#include "turret.h"
+
 #if defined (__APPLE__)
 #include <SDL2/SDL.h>
 #include <SDL2_image/SDL_image.h>
@@ -705,6 +708,13 @@ int main() {
 	bool menu, play, instructions, backstory, win , lose, Level2;
 
 
+	Player player1 = Player(renderer, 0, images_dir.c_str(), audio_dir.c_str(), 100.0, 350.0);
+
+
+	Turret turret1 = Turret(renderer, images_dir.c_str(), audio_dir.c_str(), 900.0f, 100.0f);
+	Turret turret2 = Turret(renderer, images_dir.c_str(), audio_dir.c_str(), 900.0f, 250.0f);
+	Turret turret3 = Turret(renderer, images_dir.c_str(), audio_dir.c_str(), 900.0f, 500.0f);
+	Turret turret4 = Turret(renderer, images_dir.c_str(), audio_dir.c_str(), 900.0f, 650.0f);
 
 	// ******************* ENTER THE PROGRAM LOOP ***************************
 	while(!quit)
@@ -1003,6 +1013,12 @@ int main() {
 				// ************************** UPDATES *******************************
 				UpdateBackground(deltaTime);
 
+
+				turret1.Update(deltaTime, player1.posRect);
+				turret2.Update(deltaTime, player1.posRect);
+				turret3.Update(deltaTime, player1.posRect);
+				turret4.Update(deltaTime, player1.posRect);
+
 				// ************************ START THE SDL DRAW PROCESS *****************
 				//clear the SDL_Render target
 				SDL_RenderClear(renderer);
@@ -1010,6 +1026,13 @@ int main() {
 				//draw the bkgd image
 				SDL_RenderCopy(renderer, level1, NULL, &level1Pos);
 
+				player1.Draw(renderer);
+
+				//draw the turret 1
+				turret1.Draw(renderer);
+				turret2.Draw(renderer);
+				turret3.Draw(renderer);
+				turret4.Draw(renderer);
 
 				//present new buffer to the screen
 				SDL_RenderPresent(renderer);
