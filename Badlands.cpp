@@ -12,6 +12,7 @@ int lastTime = 0;
 
 #include "player.h"
 #include "turret.h"
+#include "bandit.h"
 
 #if defined (__APPLE__)
 #include <SDL2/SDL.h>
@@ -217,11 +218,6 @@ int main() {
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
 	//************** CREATE THE SDL WINDOW END  ******************
-
-
-
-
-
 
 	// ************* VARIABLE CREATION ***************************
 	//MAIN LOOP FLAG
@@ -716,6 +712,11 @@ int main() {
 	Turret turret3 = Turret(renderer, images_dir.c_str(), audio_dir.c_str(), 900.0f, 500.0f);
 	Turret turret4 = Turret(renderer, images_dir.c_str(), audio_dir.c_str(), 900.0f, 650.0f);
 
+	Bandit bandit1 = Bandit(renderer, images_dir.c_str(), audio_dir.c_str(), 250.0f, 200.0f);
+	Bandit bandit2 = Bandit(renderer, images_dir.c_str(), audio_dir.c_str(), 500.0f, 250.0f);
+	Bandit bandit3 = Bandit(renderer, images_dir.c_str(), audio_dir.c_str(), 500.0f, 400.0f);
+	Bandit bandit4 = Bandit(renderer, images_dir.c_str(), audio_dir.c_str(), 500.0f, 550.0f);
+
 	// ******************* ENTER THE PROGRAM LOOP ***************************
 	while(!quit)
 	{
@@ -1014,10 +1015,106 @@ int main() {
 				UpdateBackground(deltaTime);
 
 
+
 				turret1.Update(deltaTime, player1.posRect);
 				turret2.Update(deltaTime, player1.posRect);
 				turret3.Update(deltaTime, player1.posRect);
 				turret4.Update(deltaTime, player1.posRect);
+
+				//update the enemy
+				bandit1.Update(deltaTime, player1.posRect);
+				bandit2.Update(deltaTime, player1.posRect);
+				bandit3.Update(deltaTime, player1.posRect);
+				bandit4.Update(deltaTime, player1.posRect);
+
+
+				//check for hit from turre1
+				for(int i = 0; i < turret1.bulletList.size(); i++)
+				{
+					if(SDL_HasIntersection(&player1.posRect, &turret1.bulletList[i].posRect)){
+						turret1.bulletList[i].Reset();
+						//playerHealth--;
+						//playerText(renderer);
+						player1.eBulletHit();
+						break;
+					}
+					//etank1
+					if(SDL_HasIntersection(&bandit1.banditRect, &player1.bulletList[i].posRect)){
+
+						player1.bulletList[i].Reset();
+
+						if(bandit1.active ==true){
+							bandit1.RemoveHealth();
+						}
+						break;
+					}
+				}
+
+				//check for hit from turre2
+				for(int i = 0; i < turret2.bulletList.size(); i++)
+				{
+					if(SDL_HasIntersection(&player1.posRect, &turret2.bulletList[i].posRect)){
+						turret2.bulletList[i].Reset();
+						//playerHealth--;
+						//playerText(renderer);
+						player1.eBulletHit();
+						break;
+					}
+				}
+
+				//check for hit from turre3
+				for(int i = 0; i < turret3.bulletList.size(); i++)
+				{
+					if(SDL_HasIntersection(&player1.posRect, &turret3.bulletList[i].posRect)){
+						turret3.bulletList[i].Reset();
+						//playerHealth--;
+						//playerText(renderer);
+						player1.eBulletHit();
+						break;
+					}
+				}
+
+				//check for hit from turre4
+				for(int i = 0; i < turret4.bulletList.size(); i++)
+				{
+					if(SDL_HasIntersection(&player1.posRect, &turret4.bulletList[i].posRect)){
+						turret4.bulletList[i].Reset();
+						//playerHealth--;
+						//playerText(renderer);
+						player1.eBulletHit();
+						break;
+					}
+				}
+
+
+
+
+				//check to see if the player has been hit by the enemy tank
+				if(SDL_HasIntersection(&player1.posRect, &bandit1.banditRect)){
+					player1.enemyHit();
+				}
+
+				//check to see if the player has been hit by the enemy tank
+				if(SDL_HasIntersection(&player1.posRect, &bandit2.banditRect)){
+					player1.enemyHit();
+				}
+
+				//check to see if the player has been hit by the enemy tank
+				if(SDL_HasIntersection(&player1.posRect, &bandit3.banditRect)){
+					player1.enemyHit();
+				}
+
+				//check to see if the player has been hit by the enemy tank
+				if(SDL_HasIntersection(&player1.posRect, &bandit4.banditRect)){
+					player1.enemyHit();
+				}
+
+
+				if(player1.playerHealth <= 0){
+					play = false;
+					gameState = LOSE;
+				}
+
 
 				// ************************ START THE SDL DRAW PROCESS *****************
 				//clear the SDL_Render target
@@ -1033,6 +1130,11 @@ int main() {
 				turret2.Draw(renderer);
 				turret3.Draw(renderer);
 				turret4.Draw(renderer);
+
+				bandit1.Draw(renderer);
+				bandit2.Draw(renderer);
+				bandit3.Draw(renderer);
+				bandit4.Draw(renderer);
 
 				//present new buffer to the screen
 				SDL_RenderPresent(renderer);

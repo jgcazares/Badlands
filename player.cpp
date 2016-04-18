@@ -7,9 +7,9 @@ const int JOYSTICK_DEAD_ZONE = 8000;
 Player::Player(SDL_Renderer *renderer, int pNum, string filePath, string audioPath, float x, float y)
 {
 
-	back = IMG_LoadTexture(renderer, (filePath + "health1.png").c_str());
-	mid = IMG_LoadTexture(renderer, (filePath + "health2.png").c_str());
-	front = IMG_LoadTexture(renderer, (filePath + "health3.png").c_str());
+	back = IMG_LoadTexture(renderer, (filePath + "health2.png").c_str());
+	mid = IMG_LoadTexture(renderer, (filePath + "health3.png").c_str());
+	front = IMG_LoadTexture(renderer, (filePath + "health1.png").c_str());
 
 	backR.x = midR.x = frontR.x = 50;
 	backR.y = midR.y = frontR.y = 40;
@@ -93,14 +93,12 @@ void Player::Update(float deltaTime)
 	//check for gamepad input
 	if(Xvalue != 0 || Yvalue != 0){
 		//get the angle between the tank and the turret
-		//x = posRect.x - xDir;
-		//y = posRect.y - yDir;
+
 		tankangle = atan2(Yvalue,Xvalue) * 180/3.14;
 
 		//set this as the old angle and dir some the players/tank can shoot when stopped
 		oldAngle = tankangle;
-		//xDirOld = xDir;
-		//yDirOld = yDir;
+
 
 		//gives us radians
 		float radians = (tankangle*3.14)/180;
@@ -120,14 +118,6 @@ void Player::Update(float deltaTime)
 		tankangle = oldAngle;
 	}
 
-
-	//adjust the position based on speed direction of the joystick and deltatime
-	//pos_X += (speed * xDir) * deltaTime;
-	//pos_Y += (speed * yDir) * deltaTime;
-
-	//update the player pos
-	//posRect.x = (int)(pos_X +0.5f);
-	//posRect.y = (int)(pos_Y +0.5f);
 
 
 	//check if the tank is off screen and set it back

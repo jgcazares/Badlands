@@ -24,15 +24,15 @@ Turret::Turret(SDL_Renderer *renderer, string filePath, string audioPath, float 
 	baseRect.w = w;
 	baseRect.h = h;
 
-	barrelRect.x = x + 46;
-	barrelRect.y = y + 46;
+	barrelRect.x = x +46;
+	barrelRect.y = y +46;
 
 	SDL_QueryTexture(tBarrel, NULL, NULL, &w, &h);
 	barrelRect.w = w;
 	barrelRect.h = h;
 
-	center.x = 3;
-	center.y = -10;
+	center.x = 12;
+	center.y = 12;
 
 	string bulletPath = filePath + "tbullet.png";
 
