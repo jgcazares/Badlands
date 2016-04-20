@@ -698,7 +698,7 @@ int main() {
 	enum GameState {MENU, PLAY, INSTRUCTIONS, BACKSTORY, WIN, LOSE, LEVEL2};
 
 	//var enum to track where we are in game
-	GameState gameState = PLAY;
+	GameState gameState = MENU;
 
 	//bool values to allow movement through the individual states
 	bool menu, play, instructions, backstory, win , lose, Level2;
@@ -712,7 +712,7 @@ int main() {
 	Turret turret3 = Turret(renderer, images_dir.c_str(), audio_dir.c_str(), 900.0f, 500.0f);
 	Turret turret4 = Turret(renderer, images_dir.c_str(), audio_dir.c_str(), 900.0f, 650.0f);
 
-	Bandit bandit1 = Bandit(renderer, images_dir.c_str(), audio_dir.c_str(), 250.0f, 200.0f);
+	Bandit bandit1 = Bandit(renderer, images_dir.c_str(), audio_dir.c_str(), 500.0f, 200.0f);
 	Bandit bandit2 = Bandit(renderer, images_dir.c_str(), audio_dir.c_str(), 500.0f, 250.0f);
 	Bandit bandit3 = Bandit(renderer, images_dir.c_str(), audio_dir.c_str(), 500.0f, 400.0f);
 	Bandit bandit4 = Bandit(renderer, images_dir.c_str(), audio_dir.c_str(), 500.0f, 550.0f);
@@ -726,12 +726,7 @@ int main() {
 		case MENU:
 
 			menu = true;
-			cout << "The Gamestate is Menu" << endl;
-			cout << "Press the A Button for Play" << endl;
-			cout << "Press the B Button for Instructions" << endl;
-			cout << "Press the X Button for Backstory" << endl;
-			cout << "Press the Y Button for quit" << endl;
-			cout << endl;
+
 
 			while(menu)
 			{
@@ -798,27 +793,12 @@ int main() {
 								}
 							}
 
-							//if b button
-							if(e.cbutton.button == SDL_CONTROLLER_BUTTON_B)
-							{
-								menu = false;
-								gameState = INSTRUCTIONS;
-							}
-
-							//if x button
-							if(e.cbutton.button == SDL_CONTROLLER_BUTTON_X)
-							{
-								menu = false;
-								gameState = BACKSTORY;
-							}
-
-							//if y button
-							if(e.cbutton.button == SDL_CONTROLLER_BUTTON_Y)
-							{
-								menu = false;
-								quit = true;
-							}
 						}//end joystick check
+						break;
+
+					case SDL_CONTROLLERAXISMOTION:
+
+						moveCursor(e.caxis);
 						break;
 
 					}// end button input check
@@ -961,9 +941,6 @@ int main() {
 
 			play = true;
 
-			cout << "The Gamestate is Play" << endl;
-			cout << "Press the A Button for Win Screen" << endl;
-			cout << "Press the B Button for Lose Screen" << endl;
 			cout << endl;
 
 			while(play)
@@ -995,24 +972,25 @@ int main() {
 							//if A button
 							if(e.cbutton.button == SDL_CONTROLLER_BUTTON_A)
 							{
-								play = false;
-								gameState = WIN;
+								player1.OnControllerButton(e.cbutton);
+								break;
 							}
 
-							//if b button
-							if(e.cbutton.button == SDL_CONTROLLER_BUTTON_B)
-							{
-								play = false;
-								gameState = LOSE;
-							}
+
 						}//end joystick check
 						break;
 					}// end button input check
 				}//end play poll event
 
+				const Sint16 Xvalue = SDL_GameControllerGetAxis(gGameController0, SDL_CONTROLLER_AXIS_LEFTX);
+				const Sint16 Yvalue = SDL_GameControllerGetAxis(gGameController0, SDL_CONTROLLER_AXIS_LEFTY);
+
+				//pass to player 1
+				player1.OnControllerAxis(Xvalue,Yvalue);
 
 				// ************************** UPDATES *******************************
 				UpdateBackground(deltaTime);
+				player1.Update(deltaTime);
 
 
 
@@ -1033,19 +1011,7 @@ int main() {
 				{
 					if(SDL_HasIntersection(&player1.posRect, &turret1.bulletList[i].posRect)){
 						turret1.bulletList[i].Reset();
-						//playerHealth--;
-						//playerText(renderer);
 						player1.eBulletHit();
-						break;
-					}
-					//etank1
-					if(SDL_HasIntersection(&bandit1.banditRect, &player1.bulletList[i].posRect)){
-
-						player1.bulletList[i].Reset();
-
-						if(bandit1.active ==true){
-							bandit1.RemoveHealth();
-						}
 						break;
 					}
 				}
@@ -1055,8 +1021,6 @@ int main() {
 				{
 					if(SDL_HasIntersection(&player1.posRect, &turret2.bulletList[i].posRect)){
 						turret2.bulletList[i].Reset();
-						//playerHealth--;
-						//playerText(renderer);
 						player1.eBulletHit();
 						break;
 					}
@@ -1067,8 +1031,6 @@ int main() {
 				{
 					if(SDL_HasIntersection(&player1.posRect, &turret3.bulletList[i].posRect)){
 						turret3.bulletList[i].Reset();
-						//playerHealth--;
-						//playerText(renderer);
 						player1.eBulletHit();
 						break;
 					}
@@ -1079,12 +1041,92 @@ int main() {
 				{
 					if(SDL_HasIntersection(&player1.posRect, &turret4.bulletList[i].posRect)){
 						turret4.bulletList[i].Reset();
-						//playerHealth--;
-						//playerText(renderer);
 						player1.eBulletHit();
 						break;
 					}
 				}
+
+
+
+				//check if the player damages an enemy
+				for(int i = 0; i < player1.bulletList.size(); i++)
+				{
+					//turret 1
+					if(SDL_HasIntersection(&turret1.baseRect, &player1.bulletList[i].posRect)){
+						player1.bulletList[i].Reset();
+						if(turret1.active == true){
+							turret1.RemoveHealth();
+						}
+						break;
+					}
+
+					//bandit 1
+					if(SDL_HasIntersection(&bandit1.banditRect, &player1.bulletList[i].posRect)){
+						player1.bulletList[i].Reset();
+						if(bandit1.active == true){
+							bandit1.RemoveHealth();
+						}
+						break;
+					}
+
+					//turret 2
+					if(SDL_HasIntersection(&turret2.baseRect, &player1.bulletList[i].posRect)){
+						player1.bulletList[i].Reset();
+						if(turret2.active == true){
+							turret2.RemoveHealth();
+						}
+						break;
+					}
+
+					//bandit 2
+					if(SDL_HasIntersection(&bandit2.banditRect, &player1.bulletList[i].posRect)){
+						player1.bulletList[i].Reset();
+						if(bandit2.active == true){
+							bandit2.RemoveHealth();
+						}
+						break;
+					}
+
+					//turret 3
+					if(SDL_HasIntersection(&turret3.baseRect, &player1.bulletList[i].posRect)){
+						player1.bulletList[i].Reset();
+						if(turret3.active == true){
+							turret3.RemoveHealth();
+						}
+						break;
+					}
+
+					//bandit 3
+					if(SDL_HasIntersection(&bandit3.banditRect, &player1.bulletList[i].posRect)){
+						player1.bulletList[i].Reset();
+						if(bandit3.active == true){
+							bandit3.RemoveHealth();
+						}
+						break;
+					}
+
+
+					//turret 4
+					if(SDL_HasIntersection(&turret4.baseRect, &player1.bulletList[i].posRect)){
+						player1.bulletList[i].Reset();
+						if(turret4.active == true){
+							turret4.RemoveHealth();
+						}
+						break;
+					}
+
+					//bandit 4
+					if(SDL_HasIntersection(&bandit4.banditRect, &player1.bulletList[i].posRect)){
+						player1.bulletList[i].Reset();
+						if(bandit4.active == true){
+							bandit4.RemoveHealth();
+						}
+						break;
+					}
+
+
+				}
+
 
 
 
@@ -1252,12 +1294,7 @@ int main() {
 									playOver = false;
 								}
 							}
-							//if A button
-							if(e.cbutton.button == SDL_CONTROLLER_BUTTON_B)
-							{
-								win = false;
-								quit = true;
-							}
+
 
 						}//end joystick check
 						break;
@@ -1331,10 +1368,6 @@ int main() {
 			alreadyOver = false;
 			lose = true;
 
-			cout << "The Gamestate is lose Screen" << endl;
-			cout << "Press the A Button for Main Menu" << endl;
-			cout << "Press the B Button to Quit Game" << endl;
-
 			cout << endl;
 
 			while(lose)
@@ -1381,13 +1414,7 @@ int main() {
 									win = false;
 									gameState = PLAY;
 									playOver = false;
-								}
-							}
-							//if A button
-							if(e.cbutton.button == SDL_CONTROLLER_BUTTON_B)
-							{
-								lose = false;
-								quit = true;
+																}
 							}
 
 						}//end joystick check

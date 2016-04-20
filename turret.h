@@ -35,6 +35,8 @@ public:
 	//is the turret active still alive
 	bool active;
 
+	bool powderDropped;
+
 	//variable to hold the list of bullets
 	vector<TurretBullet>bulletList;
 
@@ -45,6 +47,10 @@ public:
 	SDL_Texture *tBase;
 	SDL_Texture *tBarrel;
 
+	SDL_Texture *powder;
+
+	SDL_Rect powderRect;
+
 	//turrets sdl rect
 	SDL_Rect baseRect;
 
@@ -52,10 +58,12 @@ public:
 
 	float x, y, turretangle;
 
+	int tHealth;
+
 	SDL_Point center;
 
-	float fireTime = 0.0f;
-	float fireRate = 1000.0f;
+	float fireTime = 3.0f;
+	float fireRate = 100.0f;
 
 	Mix_Chunk *fire;
 
@@ -70,6 +78,10 @@ public:
 	void Reset();
 
 	void CreateBullet(SDL_Rect target);
+
+	void RemoveHealth();
+
+	void Drop();
 
 	void TankMoveX(float tankSpeed, float deltaTime);
 

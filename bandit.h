@@ -42,9 +42,6 @@ public:
 
 	SDL_Rect banditRect;
 
-	SDL_Texture *powder;
-
-	SDL_Rect powderRect;
 
 	float x,y, banditAngle;
 
@@ -67,8 +64,6 @@ public:
 
 	//draw the enemy tank
 	void Draw(SDL_Renderer *renderer);
-
-	void Drop();
 
 	//reset the tank
 	void Reset();

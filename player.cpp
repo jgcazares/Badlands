@@ -16,8 +16,8 @@ Player::Player(SDL_Renderer *renderer, int pNum, string filePath, string audioPa
 	backR.w = midR.w = frontR.w = 239;
 	backR.h = midR.h = frontR.h = 32;
 
-	playerHealth = 100.0f;
-	maxHealth = 100.0f;
+	playerHealth = 150.0f;
+	maxHealth = 150.0f;
 
 
 	//activate the player
@@ -164,7 +164,7 @@ void Player::enemyHit(){
 
 void Player::eBulletHit(){
 
-	playerHealth -= 5;
+	playerHealth -= 2;
 
 	midR.w = playerHealth/maxHealth * 239;
 }
@@ -231,12 +231,12 @@ void Player::CreateBullet(){
 			bulletList[i].active = true;
 
 			//use some math in the x positionto get the bullet close to the center
-			bulletList[i].posRect.x = (posRect.x + (posRect.w/2));
-			bulletList[i].posRect.y = (posRect.y + (posRect.h/2));
+			bulletList[i].posRect.x = (posRect.x + (posRect.w));
+			bulletList[i].posRect.y = (posRect.y + (posRect.h));
 
 			//finish aligning to the player center using the texture width
-			bulletList[i].posRect.x = bulletList[i].posRect.x - (bulletList[i].posRect.w/2);
-			bulletList[i].posRect.y = bulletList[i].posRect.y - (bulletList[i].posRect.h/2);
+			bulletList[i].posRect.x = bulletList[i].posRect.x - (bulletList[i].posRect.w);
+			bulletList[i].posRect.y = bulletList[i].posRect.y - (bulletList[i].posRect.h);
 
 			//set the x and y position fo the bullets float positions
 			bulletList[i].pos_X = bulletList[i].posRect.x;

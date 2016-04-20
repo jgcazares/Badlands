@@ -2,12 +2,9 @@
 
 Bandit::Bandit(SDL_Renderer *renderer, string filePath, string audioPath, float x, float y)
 {
-	active = false;
+	active = true;
 
-	drop = false;
 
-	powderRect.x = -2500;
-	powderRect.y = -1000;
 
 	explode = Mix_LoadWAV((audioPath + "fire.wav").c_str());
 
@@ -34,9 +31,6 @@ Bandit::Bandit(SDL_Renderer *renderer, string filePath, string audioPath, float 
 	health = 10;
 }
 
-void Bandit::Drop(){
-
-}
 
 void Bandit::RemoveHealth()
 {

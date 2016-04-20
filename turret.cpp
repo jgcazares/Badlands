@@ -6,6 +6,10 @@ Turret::Turret(SDL_Renderer *renderer, string filePath, string audioPath, float 
 	//activate
 	active = true;
 
+	tHealth = 10;
+
+	powderDropped = false;
+
 	fire = Mix_LoadWAV((audioPath + "fire.wav").c_str());
 
 	string basePath = filePath + "tBase.png";
@@ -16,10 +20,22 @@ Turret::Turret(SDL_Renderer *renderer, string filePath, string audioPath, float 
 
 	tBarrel = IMG_LoadTexture(renderer, barrelPath.c_str());
 
+	string powderPath = filePath + "Bag.png";
+
+	powder = IMG_LoadTexture(renderer, powderPath.c_str());
+
+	powderRect.x = x;
+	powderRect.y = y;
+
+	int w, h;
+	SDL_QueryTexture(powder, NULL, NULL, &w, &h);
+	powderRect.w = w;
+	powderRect.h = h;
+
 	baseRect.x = x;
 	baseRect.y = y;
 
-	int w, h;
+
 	SDL_QueryTexture(tBase, NULL, NULL, &w, &h);
 	baseRect.w = w;
 	baseRect.h = h;
@@ -53,6 +69,38 @@ Turret::Turret(SDL_Renderer *renderer, string filePath, string audioPath, float 
 	posT_Y = baseRect.x;
 
 
+}
+
+void Turret::Drop(){
+
+	powderDropped = true;
+
+	powderRect.x = baseRect.x;
+
+}
+
+void Turret::RemoveHealth()
+{
+	tHealth -= 1;
+
+	if(tHealth <= 0)
+	{
+		Reset();
+		Drop();
+	}
+}
+
+void Turret::Reset()
+{
+	baseRect.x = -1000;
+	barrelRect.x = -1000;
+
+	posT_X = baseRect.x;
+	posT_X = barrelRect.x;
+
+	tHealth = 10;
+
+	active = false;
 }
 
 void Turret::TankMoveX(float tankSpeed, float deltaTime)
