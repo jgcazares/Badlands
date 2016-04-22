@@ -1,10 +1,13 @@
 #include "turret.h"
+#include "time.h"
+
 
 Turret::Turret(SDL_Renderer *renderer, string filePath, string audioPath, float x, float y)
 {
 
 	//activate
 	active = true;
+	
 
 	tHealth = 10;
 
@@ -92,13 +95,16 @@ void Turret::RemoveHealth()
 
 void Turret::Reset()
 {
-	baseRect.x = -1000;
-	barrelRect.x = -1000;
+	baseRect.x = -5000;
+	barrelRect.x = -5000;
 
 	posT_X = baseRect.x;
 	posT_X = barrelRect.x;
 
 	tHealth = 10;
+	SDL_DestroyTexture(tBase);
+	SDL_DestroyTexture(tBarrel);
+
 
 	active = false;
 }

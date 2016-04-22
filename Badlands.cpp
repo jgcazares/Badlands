@@ -1,4 +1,10 @@
 #include <iostream>
+#include <math.h>
+#include <stdio.h>
+#include <string>
+#include <vector>
+#include <stdint.h>
+#include <sstream>
 using namespace std;
 
 //screen dimension constants
@@ -13,6 +19,8 @@ int lastTime = 0;
 #include "player.h"
 #include "turret.h"
 #include "bandit.h"
+#include "poweder.h"
+#include "explosion.h"
 
 #if defined (__APPLE__)
 #include <SDL2/SDL.h>
@@ -39,8 +47,8 @@ string audio_dir = currentWorkingDirectory + "/src/Badlands/";
 #define getcwd _getcwd
 
 string currentWorkingDirectory(getcwd(NULL, 0));
-string images_dir = currentWorkingDirectory + "\\src\\Badlands\\";
-string audio_dir = currentWorkingDirectory + "\\src\\Badlands\\";
+string images_dir = currentWorkingDirectory + "\\Badlands\\";
+string audio_dir = currentWorkingDirectory + "\\Badlands\\";
 #endif
 
 
@@ -196,9 +204,9 @@ void UpdateCursor(float deltaTime){
 bool players1Over = false, players2Over = false, instructionsOver = false,
 		quitOver = false, menuOver = false, playOver = false;
 
+vector<Explode> explodeList;
 
-
-int main() {
+int main(int argc, char* argv[]) {
 
 	// ************************ CREATE THE SDL WINDOW START ***************************
 	//start sdl2
@@ -556,7 +564,7 @@ int main() {
 
 	//set the X Y W H for the rectangle
 	playNPos.x = 700;
-	playNPos.y = 680;
+	playNPos.y = 20;
 	playNPos.w = 297;
 	playNPos.h = 75;
 	////*********************** win menu end***********************************
@@ -642,7 +650,7 @@ int main() {
 
 	//set the X Y W H for the rectangle
 	menuPos.x = 30;
-	menuPos.y = 680;
+	menuPos.y = 20;
 	menuPos.w = 272;
 	menuPos.h = 65;
 
@@ -670,7 +678,7 @@ int main() {
 	// ******************** level 1 background *********************
 
 
-	// ******************** LEVEL 1 BACKGROUND *********************
+	// ******************** LEVEL 2 BACKGROUND *********************
 	// create a SDL surface to hold the background image
 	surface = IMG_Load((images_dir + "level2.png").c_str());
 
@@ -689,9 +697,58 @@ int main() {
 	//set the X Y W H for the rectangle
 	level2Pos.x = 0;
 	level2Pos.y = 0;
-	level2Pos.w = 1024;
+	level2Pos.w = 2048;
 	level2Pos.h = 768;
-	// ******************** level 1 background *********************
+	// ******************** level 2 background *********************
+
+	// ******************** Backstory BACKGROUND *********************
+	// create a SDL surface to hold the background image
+	surface = IMG_Load((images_dir + "backStoryBkgd.png").c_str());
+
+	//create an sdl texture
+	SDL_Texture *backStory;
+
+	//place the surface into the texture bkgd1
+	backStory = SDL_CreateTextureFromSurface(renderer, surface);
+
+	//free the sdl surface
+	SDL_FreeSurface(surface);
+
+	//create sdl rect for title
+	SDL_Rect backSPos;
+
+	//set the X Y W H for the rectangle
+	backSPos.x = 0;
+	backSPos.y = 0;
+	backSPos.w = 1024;
+	backSPos.h = 768;
+	// ******************** level 2 background *********************
+
+
+
+	// ******************** instructions BACKGROUND *********************
+	// create a SDL surface to hold the background image
+	surface = IMG_Load((images_dir + "insBkgd.png").c_str());
+
+	//create an sdl texture
+	SDL_Texture *insB;
+
+	//place the surface into the texture bkgd1
+	insB = SDL_CreateTextureFromSurface(renderer, surface);
+
+	//free the sdl surface
+	SDL_FreeSurface(surface);
+
+	//create sdl rect for title
+	SDL_Rect insBPos;
+
+	//set the X Y W H for the rectangle
+	insBPos.x = 0;
+	insBPos.y = 0;
+	insBPos.w = 1024;
+	insBPos.h = 768;
+	// ******************** level 2 background *********************
+
 
 
 	// **************** Set up the gamestates *****************
@@ -704,7 +761,11 @@ int main() {
 	bool menu, play, instructions, backstory, win , lose, Level2;
 
 
+
+
+
 	Player player1 = Player(renderer, 0, images_dir.c_str(), audio_dir.c_str(), 100.0, 350.0);
+	Player player2 = Player(renderer, 0, images_dir.c_str(), audio_dir.c_str(), 100.0, 350.0);
 
 
 	Turret turret1 = Turret(renderer, images_dir.c_str(), audio_dir.c_str(), 900.0f, 100.0f);
@@ -712,10 +773,103 @@ int main() {
 	Turret turret3 = Turret(renderer, images_dir.c_str(), audio_dir.c_str(), 900.0f, 500.0f);
 	Turret turret4 = Turret(renderer, images_dir.c_str(), audio_dir.c_str(), 900.0f, 650.0f);
 
+	Turret turret5 = Turret(renderer, images_dir.c_str(), audio_dir.c_str(), 1800.0f, 100.0f);
+	Turret turret6 = Turret(renderer, images_dir.c_str(), audio_dir.c_str(), 1800.0f, 250.0f);
+	Turret turret7 = Turret(renderer, images_dir.c_str(), audio_dir.c_str(), 1800.0f, 500.0f);
+	Turret turret8 = Turret(renderer, images_dir.c_str(), audio_dir.c_str(), 1800.0f, 650.0f);
+
 	Bandit bandit1 = Bandit(renderer, images_dir.c_str(), audio_dir.c_str(), 500.0f, 200.0f);
 	Bandit bandit2 = Bandit(renderer, images_dir.c_str(), audio_dir.c_str(), 500.0f, 250.0f);
 	Bandit bandit3 = Bandit(renderer, images_dir.c_str(), audio_dir.c_str(), 500.0f, 400.0f);
 	Bandit bandit4 = Bandit(renderer, images_dir.c_str(), audio_dir.c_str(), 500.0f, 550.0f);
+
+
+	float X_pos = 0.0f;
+
+	float Y_pos = 0.0f;
+
+
+	// jewel HUD
+	SDL_Texture *bagbkgd = IMG_LoadTexture(renderer, (images_dir + "bagHud.png").c_str());
+	SDL_Rect bagbkgdRect;
+	bagbkgdRect.x = 370;
+	bagbkgdRect.y = 10;
+	bagbkgdRect.w = 284;
+	bagbkgdRect.h = 91;
+
+
+	SDL_Texture *bag1 = IMG_LoadTexture(renderer, (images_dir + "bag1.png").c_str());
+	SDL_Rect bag1Pos;
+	bag1Pos.x = 370;
+	bag1Pos.y = 10;
+	bag1Pos.w = 284;
+	bag1Pos.h = 91;
+
+	SDL_Texture *bag2 = IMG_LoadTexture(renderer, (images_dir + "bag2.png").c_str());
+	SDL_Rect bag2Pos;
+	bag2Pos.x = 370;
+	bag2Pos.y = 10;
+	bag2Pos.w = 284;
+	bag2Pos.h = 91;
+
+	SDL_Texture *bag3 = IMG_LoadTexture(renderer, (images_dir + "bag3.png").c_str());
+	SDL_Rect bag3Pos;
+	bag3Pos.x = 370;
+	bag3Pos.y = 10;
+	bag3Pos.w = 284;
+	bag3Pos.h = 91;
+
+	SDL_Texture *bag4 = IMG_LoadTexture(renderer, (images_dir + "bag4.png").c_str());
+	SDL_Rect bag4Pos;
+	bag4Pos.x = 370;
+	bag4Pos.y = 10;
+	bag4Pos.w = 284;
+	bag4Pos.h = 91;
+
+	bool haveBag1 = false;
+	bool haveBag2 = false;
+	bool haveBag3 = false;
+	bool haveBag4 = false;
+
+	Powder powder1 = Powder(renderer, images_dir.c_str(), 0, 900.0f, 100.0f);
+	Powder powder2 = Powder(renderer, images_dir.c_str(), 1, 900.0f, 250.0f);
+	Powder powder3 = Powder(renderer, images_dir.c_str(), 2, 900.0f, 500.0f);
+	Powder powder4 = Powder(renderer, images_dir.c_str(), 3, 900.0f, 650.0f);
+
+
+
+
+
+	//Fuel Stuff
+	Powder fuel1 = Powder(renderer, images_dir.c_str(), 4, 1800.0f, 100.0f);
+	Powder fuel2 = Powder(renderer, images_dir.c_str(), 4, 1800.0f, 250.0f);
+	Powder fuel3 = Powder(renderer, images_dir.c_str(), 4, 1800.0f, 500.0f);
+	Powder fuel4 = Powder(renderer, images_dir.c_str(), 4, 1800.0f, 650.0f);
+
+	SDL_Texture *fuelB = IMG_LoadTexture(renderer, (images_dir + "fuelHUD.png").c_str());
+	SDL_Texture *fuelM = IMG_LoadTexture(renderer, (images_dir + "movingBar.png").c_str());
+	
+
+	SDL_Rect fuelRect;
+	fuelRect.x = 10;
+	fuelRect.y = 600;
+	fuelRect.w = 238;
+	fuelRect.h = 79;
+
+	SDL_Rect movingRect;
+	movingRect.x = 71;
+	movingRect.y = 643;
+	movingRect.w = 173;
+	movingRect.h = 29;
+
+	//Fuel INFO
+	float currentFuel = 0.0f;
+	float maxFuel = 100.0f;
+
+	int fuelCount = 0;
+
+
+
 
 	// ******************* ENTER THE PROGRAM LOOP ***************************
 	while(!quit)
@@ -770,7 +924,7 @@ int main() {
 								if(players2Over){
 									Mix_PlayChannel(-1, pressedSound, 0);
 									menu = false;
-									gameState = INSTRUCTIONS;
+									gameState = BACKSTORY;
 									players2Over = false;
 								}
 
@@ -778,7 +932,7 @@ int main() {
 								if(instructionsOver){
 									Mix_PlayChannel(-1, pressedSound, 0);
 									menu = false;
-									gameState = BACKSTORY;
+									gameState = INSTRUCTIONS;
 									instructionsOver = false;
 								}
 
@@ -882,64 +1036,11 @@ int main() {
 			}// ends menu screen
 			break;
 
-		case INSTRUCTIONS:
-
-			instructions = true;
-			cout << "The Gamestate is Instructions" << endl;
-			cout << "Press the A Button for Main Menu" << endl;
-			cout << endl;
-
-			while(instructions)
-			{
-				//check for input
-				if(SDL_PollEvent(&e))
-				{
-					//see if the player closes the window's X button
-					if(e.type == SDL_QUIT)
-					{
-						quit = true;
-						instructions = false;
-						break;
-					}
-
-					//test for controller input
-					switch(e.type)
-					{
-
-					case SDL_CONTROLLERBUTTONDOWN:
-
-						//checks to see if this is the controller 0
-						if(e.cdevice.which == 0){
-							//if A button
-							if(e.cbutton.button == SDL_CONTROLLER_BUTTON_A)
-							{
-								instructions = false;
-								gameState = MENU;
-							}
-
-						}//end joystick check
-						break;
-
-					}// end button input check
-				}//end instructions poll event
-
-				// ************************ START THE SDL DRAW PROCESS *****************
-				//clear the SDL_Render target
-				SDL_RenderClear(renderer);
-
-				//draw the background
-
-
-				//present new buffer to the screen
-				SDL_RenderPresent(renderer);
-
-			}// ends instructions screen
-			break;
-
-
 		case PLAY:
 
 			play = true;
+
+			currentFuel = 0.0f;
 
 			cout << endl;
 
@@ -1152,9 +1253,49 @@ int main() {
 				}
 
 
+				//check to see if the player has hit the purple jewel
+				if (SDL_HasIntersection(&player1.posRect, &powder1.powderRect)) {
+					haveBag1 = true;
+					powder1.active = false;
+					powder1.powderRect.x = -5000;
+					powder1.powderRect.y = -5000;
+				}
+
+				//check to see if the player has hit the red jewel
+				if (SDL_HasIntersection(&player1.posRect, &powder2.powderRect)) {
+					haveBag2 = true;
+					powder2.active = false;
+					powder2.powderRect.x = -5000;
+					powder2.powderRect.y = -5000;
+				}
+
+				//check to see if the player has hit the red jewel
+				if (SDL_HasIntersection(&player1.posRect, &powder3.powderRect)) {
+					haveBag3 = true;
+					powder3.active = false;
+					powder3.powderRect.x = -5000;
+					powder3.powderRect.y = -5000;
+				}
+
+				//check to see if the player has hit the red jewel
+				if (SDL_HasIntersection(&player1.posRect, &powder4.powderRect)) {
+					haveBag4 = true;
+					powder4.active = false;
+					powder4.powderRect.x = -5000;
+					powder4.powderRect.y = -5000;
+				}
+
+
+
+
 				if(player1.playerHealth <= 0){
 					play = false;
 					gameState = LOSE;
+				}
+
+				if (haveBag1 == true && haveBag2 == true && haveBag3 == true && haveBag4 == true) {
+					play = false;
+					gameState = LEVEL2;
 				}
 
 
@@ -1165,7 +1306,37 @@ int main() {
 				//draw the bkgd image
 				SDL_RenderCopy(renderer, level1, NULL, &level1Pos);
 
+				SDL_RenderCopy(renderer, bagbkgd, NULL, &bagbkgdRect);
+
+				//draw the pruple UI
+				if (haveBag1)
+					SDL_RenderCopy(renderer, bag1, NULL, &bag1Pos);
+
+				//draw the red UI
+				if (haveBag2)
+					SDL_RenderCopy(renderer, bag2, NULL, &bag2Pos);
+
+				//draw the blue UI
+				if (haveBag3)
+					SDL_RenderCopy(renderer, bag3, NULL, &bag3Pos);
+
+				//draw the blue UI
+				if (haveBag4)
+					SDL_RenderCopy(renderer, bag4, NULL, &bag4Pos);
+
 				player1.Draw(renderer);
+
+
+				if (powder1.active)
+					powder1.Draw(renderer);
+				if (powder2.active)
+					powder2.Draw(renderer);
+				if (powder3.active)
+					powder3.Draw(renderer);
+				if (powder4.active)
+					powder4.Draw(renderer);
+
+
 
 				//draw the turret 1
 				turret1.Draw(renderer);
@@ -1184,16 +1355,392 @@ int main() {
 			break;
 
 
+
+			case LEVEL2:
+
+			Level2 = true;
+
+			cout << endl;
+
+			while(Level2)
+			{
+				//create delta time for framerate independence
+				thisTime = SDL_GetTicks();
+				deltaTime = (float)(thisTime - lastTime)/ 1000;
+				lastTime = thisTime;
+
+				//check for input
+				if(SDL_PollEvent(&e))
+				{
+					//see if the player closes the window's X button
+					if(e.type == SDL_QUIT)
+					{
+						quit = true;
+						Level2 = false;
+						break;
+					}
+
+					//test for controller input
+					switch(e.type)
+					{
+
+					case SDL_CONTROLLERBUTTONDOWN:
+
+						//checks to see if this is the controller 0
+						if(e.cdevice.which == 0){
+							//if A button
+							if(e.cbutton.button == SDL_CONTROLLER_BUTTON_A)
+							{
+								player2.OnControllerButton(e.cbutton);
+								break;
+							}
+
+
+						}//end joystick check
+						break;
+					}// end button input check
+				}//end play poll event
+
+				const Sint16 Xvalue = SDL_GameControllerGetAxis(gGameController0, SDL_CONTROLLER_AXIS_LEFTX);
+				const Sint16 Yvalue = SDL_GameControllerGetAxis(gGameController0, SDL_CONTROLLER_AXIS_LEFTY);
+
+				//pass to player 1
+				player2.OnControllerAxis(Xvalue,Yvalue);
+
+				// ************************** UPDATES *******************************
+				UpdateBackground(deltaTime);
+				player2.Update(deltaTime);
+
+				//move the background left and right
+				if ((player2.posRect.x >= 1024 - player2.posRect.w) && (player2.Xvalue > 8000)) {
+
+					//adjust the position floats based on speed direction and deltatime
+					X_pos -= (player2.speed) * deltaTime;
+					if ((level2Pos.x > -1024)) {
+						level2Pos.x = (int)(X_pos + 0.5f);
+						
+						//move the turret
+						if (turret5.active = true) {
+							turret5.TankMoveX(-player2.speed, deltaTime);
+						}
+						if (turret6.active = true) {
+							turret6.TankMoveX(-player2.speed, deltaTime);
+						}
+						if (turret7.active = true) {
+							turret7.TankMoveX(-player2.speed, deltaTime);
+						}
+						if (turret8.active = true) {
+							turret8.TankMoveX(-player2.speed, deltaTime);
+						}
+
+						////enemy tanks
+						//eTank1.eTankMoveX(-tank1.speed, deltaTime);
+						//eTank2.eTankMoveX(-tank1.speed, deltaTime);
+						//eTank3.eTankMoveX(-tank1.speed, deltaTime);
+						//eTank4.eTankMoveX(-tank1.speed, deltaTime);
+
+
+						fuel1.TankMoveX(-player2.speed, deltaTime);
+						fuel2.TankMoveX(-player2.speed, deltaTime);
+						fuel3.TankMoveX(-player2.speed, deltaTime);
+						fuel4.TankMoveX(-player2.speed, deltaTime);
+					}
+					else {
+						X_pos = level2Pos.x;
+					}
+				}
+
+				if ((player2.posRect.x <= 0) && (player2.Xvalue < 8000)) {
+					X_pos += (player2.speed) * deltaTime;
+					if ((level2Pos.x < 0)) {
+						level2Pos.x = (int)(X_pos + 0.5f);
+						//move the turret
+						turret5.TankMoveX(player2.speed, deltaTime);
+						turret6.TankMoveX(player2.speed, deltaTime);
+						turret7.TankMoveX(player2.speed, deltaTime);
+						turret8.TankMoveX(player2.speed, deltaTime);
+
+						////enemy tanks
+						//eTank1.eTankMoveX(tank1.speed, deltaTime);
+						//eTank2.eTankMoveX(tank1.speed, deltaTime);
+						//eTank3.eTankMoveX(tank1.speed, deltaTime);
+						//eTank4.eTankMoveX(tank1.speed, deltaTime);
+
+						fuel1.TankMoveX(player2.speed, deltaTime);
+						fuel2.TankMoveX(player2.speed, deltaTime);
+						fuel3.TankMoveX(player2.speed, deltaTime);
+						fuel4.TankMoveX(player2.speed, deltaTime);
+					}
+					else {
+						X_pos = level2Pos.x;
+					}
+				}
+
+
+
+				turret5.Update(deltaTime, player2.posRect);
+				turret6.Update(deltaTime, player2.posRect);
+				turret7.Update(deltaTime, player2.posRect);
+				turret8.Update(deltaTime, player2.posRect);
+
+				////update the enemy
+				//bandit1.Update(deltaTime, player1.posRect);
+				//bandit2.Update(deltaTime, player1.posRect);
+				//bandit3.Update(deltaTime, player1.posRect);
+				//bandit4.Update(deltaTime, player1.posRect);
+
+
+				//check for hit from turret 5
+				for(int i = 0; i < turret5.bulletList.size(); i++)
+				{
+					if(SDL_HasIntersection(&player2.posRect, &turret5.bulletList[i].posRect)){
+						turret5.bulletList[i].Reset();
+						player2.eBulletHit();
+						break;
+					}
+				}
+
+				//check for hit from turret 6
+				for(int i = 0; i < turret6.bulletList.size(); i++)
+				{
+					if(SDL_HasIntersection(&player2.posRect, &turret6.bulletList[i].posRect)){
+						turret6.bulletList[i].Reset();
+						player2.eBulletHit();
+						break;
+					}
+				}
+
+				//check for hit from turret 7
+				for(int i = 0; i < turret7.bulletList.size(); i++)
+				{
+					if(SDL_HasIntersection(&player2.posRect, &turret7.bulletList[i].posRect)){
+						turret7.bulletList[i].Reset();
+						player2.eBulletHit();
+						break;
+					}
+				}
+
+				//check for hit from turret 8
+				for(int i = 0; i < turret8.bulletList.size(); i++)
+				{
+					if(SDL_HasIntersection(&player2.posRect, &turret8.bulletList[i].posRect)){
+						turret8.bulletList[i].Reset();
+						player2.eBulletHit();
+						break;
+					}
+				}
+
+
+
+				//check if the player damages an enemy
+				for(int i = 0; i < player2.bulletList.size(); i++)
+				{
+					//turret 5
+					if(SDL_HasIntersection(&turret5.baseRect, &player2.bulletList[i].posRect)){
+						player2.bulletList[i].Reset();
+						if(turret5.active == true){
+							turret5.RemoveHealth();
+						}
+						break;
+					}
+
+				//	//bandit 1
+				//	if(SDL_HasIntersection(&bandit1.banditRect, &player1.bulletList[i].posRect)){
+				//		player1.bulletList[i].Reset();
+				//		if(bandit1.active == true){
+				//			bandit1.RemoveHealth();
+				//		}
+				//		break;
+				//	}
+
+					//turret 6
+					if(SDL_HasIntersection(&turret6.baseRect, &player2.bulletList[i].posRect)){
+						player2.bulletList[i].Reset();
+						if(turret6.active == true){
+							turret6.RemoveHealth();
+						}
+						break;
+					}
+
+				//	//bandit 2
+				//	if(SDL_HasIntersection(&bandit2.banditRect, &player1.bulletList[i].posRect)){
+				//		player1.bulletList[i].Reset();
+				//		if(bandit2.active == true){
+				//			bandit2.RemoveHealth();
+				//		}
+				//		break;
+				//	}
+
+					//turret 7
+					if(SDL_HasIntersection(&turret7.baseRect, &player2.bulletList[i].posRect)){
+						player2.bulletList[i].Reset();
+						if(turret7.active == true){
+							turret7.RemoveHealth();
+						}
+						break;
+					}
+
+				//	//bandit 3
+				//	if(SDL_HasIntersection(&bandit3.banditRect, &player1.bulletList[i].posRect)){
+				//		player1.bulletList[i].Reset();
+				//		if(bandit3.active == true){
+				//			bandit3.RemoveHealth();
+				//		}
+				//		break;
+				//	}
+
+
+					//turret 8
+					if(SDL_HasIntersection(&turret8.baseRect, &player2.bulletList[i].posRect)){
+						player2.bulletList[i].Reset();
+						if(turret8.active == true){
+							turret8.RemoveHealth();
+						}
+						break;
+					}
+
+				//	//bandit 4
+				//	if(SDL_HasIntersection(&bandit4.banditRect, &player1.bulletList[i].posRect)){
+				//		player1.bulletList[i].Reset();
+				//		if(bandit4.active == true){
+				//			bandit4.RemoveHealth();
+				//		}
+				//		break;
+				//	}
+
+
+				}
+
+
+
+
+
+				////check to see if the player has been hit by the enemy tank
+				//if(SDL_HasIntersection(&player1.posRect, &bandit1.banditRect)){
+				//	player1.enemyHit();
+				//}
+
+				////check to see if the player has been hit by the enemy tank
+				//if(SDL_HasIntersection(&player1.posRect, &bandit2.banditRect)){
+				//	player1.enemyHit();
+				//}
+
+				////check to see if the player has been hit by the enemy tank
+				//if(SDL_HasIntersection(&player1.posRect, &bandit3.banditRect)){
+				//	player1.enemyHit();
+				//}
+
+				////check to see if the player has been hit by the enemy tank
+				//if(SDL_HasIntersection(&player1.posRect, &bandit4.banditRect)){
+				//	player1.enemyHit();
+				//}
+
+
+				//FOLDER CODE
+				if (SDL_HasIntersection(&player2.posRect, &fuel1.powderRect) && fuel1.active == true) {
+					fuel1.active = false;
+					fuel1.powderRect.x = -5000;
+					fuel1.powderRect.y = -5000;
+					currentFuel += 100 / 4;
+					fuelCount++;
+				}
+				if (SDL_HasIntersection(&player2.posRect, &fuel2.powderRect) && fuel2.active == true) {
+					fuel2.active = false;
+					fuel2.powderRect.x = -5000;
+					fuel2.powderRect.y = -5000;
+					currentFuel += 100 / 4;
+					fuelCount++;
+				}
+				if (SDL_HasIntersection(&player2.posRect, &fuel3.powderRect) && fuel3.active == true) {
+					fuel3.active = false;
+					fuel3.powderRect.x = -5000;
+					fuel3.powderRect.y = -5000;
+					currentFuel += 100 / 4;
+					fuelCount++;
+				}
+				if (SDL_HasIntersection(&player2.posRect, &fuel4.powderRect) && fuel4.active == true) {
+					fuel4.active = false;
+					fuel4.powderRect.x = -5000;
+					fuel4.powderRect.y = -5000;
+					currentFuel += 100 / 4;
+					fuelCount++;
+				}
+
+				movingRect.w = currentFuel / maxFuel * 173;
+
+
+				if(player2.playerHealth <= 0){
+					Level2 = false;
+					gameState = LOSE;
+				}
+
+				if (fuelCount == 4) {
+					Level2 = false;
+					gameState = WIN;
+				}
+
+
+
+				// ************************ START THE SDL DRAW PROCESS *****************
+				//clear the SDL_Render target
+				SDL_RenderClear(renderer);
+
+				//draw the bkgd image
+				SDL_RenderCopy(renderer, level2, NULL, &level2Pos);
+
+				//fuel middle UI
+				SDL_RenderCopy(renderer, fuelM, NULL, &movingRect);
+				//fuel back UI
+				SDL_RenderCopy(renderer, fuelB, NULL, &fuelRect);
+			
+
+				player2.Draw(renderer);
+
+				if (fuel1.active) {
+					fuel1.Draw(renderer);
+				}
+				if (fuel2.active) {
+					fuel2.Draw(renderer);
+				}
+				if (fuel3.active) {
+					fuel3.Draw(renderer);
+				}
+				if (fuel4.active) {
+					fuel4.Draw(renderer);
+				}
+
+				//draw the turret 1
+				turret5.Draw(renderer);
+				turret6.Draw(renderer);
+				turret7.Draw(renderer);
+				turret8.Draw(renderer);
+
+				//bandit1.Draw(renderer);
+				//bandit2.Draw(renderer);
+				//bandit3.Draw(renderer);
+				//bandit4.Draw(renderer);
+
+				//present new buffer to the screen
+				SDL_RenderPresent(renderer);
+			}// ends play screen
+			break;
+
+
+
+
 		case BACKSTORY:
 
 			backstory = true;
-			cout << "The Gamestate is Backstory" << endl;
-			cout << "Press the A Button for Main Menu" << endl;
 
 			cout << endl;
 
 			while(backstory)
 			{
+				//set up the frame rate for the section or case
+				thisTime = SDL_GetTicks();
+				deltaTime = (float)(thisTime - lastTime) / 1000;
+				lastTime = thisTime;
+
 				//check for input
 				if(SDL_PollEvent(&e))
 				{
@@ -1216,38 +1763,176 @@ int main() {
 							//if A button
 							if(e.cbutton.button == SDL_CONTROLLER_BUTTON_A)
 							{
-								backstory = false;
-								gameState = MENU;
+								//if player chooses main menu
+								if (menuOver) {
+									Mix_PlayChannel(-1, pressedSound, 0);
+									backstory = false;
+									gameState = MENU;
+									menuOver = false;
+								}
 							}
 
 						}//end joystick check
 						break;
+
+					case SDL_CONTROLLERAXISMOTION:
+
+						moveCursor(e.caxis);
+
+						break;
 					}// end button input check
 				}//end backstory poll event
+
+
+
+				 //****************************UPDATE SECTION*******************************
+				UpdateBackground(deltaTime);
+
+				//curosr
+				UpdateCursor(deltaTime);
+
+				menuOver = SDL_HasIntersection(&activePos, &menuPos);
+
+
+				//if the cursor is over a button, play the over sound
+				if (menuOver) {
+					if (alreadyOver == false) {
+						Mix_PlayChannel(-1, overSound, 0);
+						alreadyOver = true;
+					}
+				}
+
+				//if the cursor is not over any button reset the alreadyOver var
+				if (!menuOver) {
+					alreadyOver = false;
+				}
 
 				// ************************ START THE SDL DRAW PROCESS *****************
 				//clear the SDL_Render target
 				SDL_RenderClear(renderer);
 
-				//draw the background
+				SDL_RenderCopy(renderer, backStory, NULL, &backSPos);
 
+				//draw the background
+				if (menuOver) {
+					SDL_RenderCopy(renderer, menuO, NULL, &menuPos);
+				}
+				else {
+					SDL_RenderCopy(renderer, menuN, NULL, &menuPos);
+				}
+
+				//draw the cursor  cursor
+				SDL_RenderCopy(renderer, cursor, NULL, &cursorPos);
 
 				//present new buffer to the screen
 				SDL_RenderPresent(renderer);
 			}// ends backstory screen
 			break;
 
+case INSTRUCTIONS:
 
+	instructions = true;
+
+
+	while (instructions)
+	{
+		//set up the frame rate for the section or case
+		thisTime = SDL_GetTicks();
+		deltaTime = (float)(thisTime - lastTime) / 1000;
+		lastTime = thisTime;
+
+		//check for input
+		if (SDL_PollEvent(&e))
+		{
+			//see if the player closes the window's X button
+			if (e.type == SDL_QUIT)
+			{
+				quit = true;
+				instructions = false;
+				break;
+			}
+
+			//test for controller input
+			switch (e.type)
+			{
+
+			case SDL_CONTROLLERBUTTONDOWN:
+
+				//checks to see if this is the controller 0
+				if (e.cdevice.which == 0) {
+					//if A button
+					if (e.cbutton.button == SDL_CONTROLLER_BUTTON_A)
+					{
+						//if player chooses main menu
+						if (menuOver) {
+							Mix_PlayChannel(-1, pressedSound, 0);
+							instructions = false;
+							gameState = MENU;
+							menuOver = false;
+						}
+					}
+
+				}//end joystick check
+				break;
+
+			case SDL_CONTROLLERAXISMOTION:
+
+				moveCursor(e.caxis);
+
+				break;
+
+			}// end button input check
+		}//end instructions poll event
+
+		 //****************************UPDATE SECTION*******************************
+		UpdateBackground(deltaTime);
+
+		//curosr
+		UpdateCursor(deltaTime);
+
+		menuOver = SDL_HasIntersection(&activePos, &menuPos);
+
+
+		//if the cursor is over a button, play the over sound
+		if (menuOver) {
+			if (alreadyOver == false) {
+				Mix_PlayChannel(-1, overSound, 0);
+				alreadyOver = true;
+			}
+		}
+
+		//if the cursor is not over any button reset the alreadyOver var
+		if (!menuOver) {
+			alreadyOver = false;
+		}
+
+		 // ************************ START THE SDL DRAW PROCESS *****************
+		 //clear the SDL_Render target
+		SDL_RenderClear(renderer);
+
+		SDL_RenderCopy(renderer, insB, NULL, &insBPos);
+
+		//draw the background
+		if (menuOver) {
+			SDL_RenderCopy(renderer, menuO, NULL, &menuPos);
+		}
+		else {
+			SDL_RenderCopy(renderer, menuN, NULL, &menuPos);
+		}
+
+		//draw the cursor  cursor
+		SDL_RenderCopy(renderer, cursor, NULL, &cursorPos);
+
+
+		//present new buffer to the screen
+		SDL_RenderPresent(renderer);
+
+	}// ends instructions screen
+	break;
 
 		case WIN:
 			alreadyOver = false;
 			win = true;
-
-			cout << "The Gamestate is Win Screen" << endl;
-			cout << "Press the A Button for Main Menu" << endl;
-			cout << "Press the B Button to Quit Game" << endl;
-
-			cout << endl;
 
 			while(win)
 			{
@@ -1479,66 +2164,6 @@ int main() {
 				//present new buffer to the screen
 				SDL_RenderPresent(renderer);
 			}// ends lose screen
-			break;
-
-		case LEVEL2:
-
-			Level2 = true;
-
-			cout << "The Gamestate is Play" << endl;
-			cout << "Press the A Button for Win Screen" << endl;
-			cout << "Press the B Button for Lose Screen" << endl;
-			cout << endl;
-
-			while(level2)
-			{
-				//check for input
-				if(SDL_PollEvent(&e))
-				{
-					//see if the player closes the window's X button
-					if(e.type == SDL_QUIT)
-					{
-						quit = true;
-						Level2 = false;
-						break;
-					}
-
-					//test for controller input
-					switch(e.type)
-					{
-
-					case SDL_CONTROLLERBUTTONDOWN:
-
-						//checks to see if this is the controller 0
-						if(e.cdevice.which == 0){
-							//if A button
-							if(e.cbutton.button == SDL_CONTROLLER_BUTTON_A)
-							{
-								Level2 = false;
-								gameState = WIN;
-							}
-
-							//if b button
-							if(e.cbutton.button == SDL_CONTROLLER_BUTTON_B)
-							{
-								Level2 = false;
-								gameState = LOSE;
-							}
-						}//end joystick check
-						break;
-					}// end button input check
-				}//end play poll event
-
-				// ************************ START THE SDL DRAW PROCESS *****************
-				//clear the SDL_Render target
-				SDL_RenderClear(renderer);
-
-				//draw the background
-
-
-				//present new buffer to the screen
-				SDL_RenderPresent(renderer);
-			}// ends play screen
 			break;
 
 		}// ends the  switch
