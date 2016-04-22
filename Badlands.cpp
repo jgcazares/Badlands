@@ -16,6 +16,7 @@ float deltaTime = 0.0;
 int thisTime = 0;
 int lastTime = 0;
 
+#include "time.h"
 #include "player.h"
 #include "turret.h"
 #include "bandit.h"
@@ -249,18 +250,24 @@ int main(int argc, char* argv[]) {
 	//OPEN AUDIO CHANNEL
 	Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
 
-	//load music file
-	Mix_Music *bgm = Mix_LoadMUS((audio_dir + "battle.wav").c_str());
-
-	//if the music file is not playing play it
-	if(!Mix_PlayingMusic())
-		Mix_PlayMusic(bgm, -1);
-
 	//set up a sound efect chunk for the button over state
 	Mix_Chunk *overSound = Mix_LoadWAV((audio_dir + "over.wav").c_str());
 
 	//set up a sound effect of the button pressed state
 	Mix_Chunk *pressedSound =Mix_LoadWAV((audio_dir + "pressed.wav").c_str());
+
+	//set up a sound effect of the button pressed state
+	Mix_Chunk *winSound =Mix_LoadWAV((audio_dir + "winM.wav").c_str());
+
+	//set up a sound effect of the button pressed state
+	Mix_Chunk *pickUpSound =Mix_LoadWAV((audio_dir + "pickUp.wav").c_str());
+
+//	//load music file
+//	Mix_Music *menuM = Mix_LoadMUS((audio_dir + "ambientM.wav").c_str());
+//
+//	//if the music file is not playing play it
+//	if(!Mix_PlayingMusic())
+//		Mix_PlayMusic(menuM, -1);
 
 	//bool value to control the over sound effect
 	bool alreadyOver = false;
@@ -918,6 +925,7 @@ int main(int argc, char* argv[]) {
 				deltaTime = (float)(thisTime - lastTime)/ 1000;
 				lastTime = thisTime;
 
+
 				//check for input
 				if(SDL_PollEvent(&e))
 				{
@@ -1288,6 +1296,7 @@ int main(int argc, char* argv[]) {
 					powder1.active = false;
 					powder1.powderRect.x = -5000;
 					powder1.powderRect.y = -5000;
+					Mix_PlayChannel(-1, pickUpSound, 0);
 				}
 
 				//check to see if the player has hit the red jewel
@@ -1296,6 +1305,7 @@ int main(int argc, char* argv[]) {
 					powder2.active = false;
 					powder2.powderRect.x = -5000;
 					powder2.powderRect.y = -5000;
+					Mix_PlayChannel(-1, pickUpSound, 0);
 				}
 
 				//check to see if the player has hit the red jewel
@@ -1304,6 +1314,7 @@ int main(int argc, char* argv[]) {
 					powder3.active = false;
 					powder3.powderRect.x = -5000;
 					powder3.powderRect.y = -5000;
+					Mix_PlayChannel(-1, pickUpSound, 0);
 				}
 
 				//check to see if the player has hit the red jewel
@@ -1312,6 +1323,7 @@ int main(int argc, char* argv[]) {
 					powder4.active = false;
 					powder4.powderRect.x = -5000;
 					powder4.powderRect.y = -5000;
+					Mix_PlayChannel(-1, pickUpSound, 0);
 				}
 
 
@@ -1679,6 +1691,7 @@ int main(int argc, char* argv[]) {
 					fuel1.powderRect.y = -5000;
 					currentFuel += 100 / 4;
 					fuelCount++;
+					Mix_PlayChannel(-1, pickUpSound, 0);
 				}
 				if (SDL_HasIntersection(&player2.posRect, &fuel2.powderRect) && fuel2.active == true) {
 					fuel2.active = false;
@@ -1686,6 +1699,7 @@ int main(int argc, char* argv[]) {
 					fuel2.powderRect.y = -5000;
 					currentFuel += 100 / 4;
 					fuelCount++;
+					Mix_PlayChannel(-1, pickUpSound, 0);
 				}
 				if (SDL_HasIntersection(&player2.posRect, &fuel3.powderRect) && fuel3.active == true) {
 					fuel3.active = false;
@@ -1693,6 +1707,7 @@ int main(int argc, char* argv[]) {
 					fuel3.powderRect.y = -5000;
 					currentFuel += 100 / 4;
 					fuelCount++;
+					Mix_PlayChannel(-1, pickUpSound, 0);
 				}
 				if (SDL_HasIntersection(&player2.posRect, &fuel4.powderRect) && fuel4.active == true) {
 					fuel4.active = false;
@@ -1700,6 +1715,7 @@ int main(int argc, char* argv[]) {
 					fuel4.powderRect.y = -5000;
 					currentFuel += 100 / 4;
 					fuelCount++;
+					Mix_PlayChannel(-1, pickUpSound, 0);
 				}
 
 				movingRect.w = currentFuel / maxFuel * 173;
@@ -1979,6 +1995,7 @@ case INSTRUCTIONS:
 				deltaTime = (float)(thisTime - lastTime) / 1000;
 				lastTime = thisTime;
 
+
 				//check for input
 				if(SDL_PollEvent(&e))
 				{
@@ -2039,7 +2056,6 @@ case INSTRUCTIONS:
 
 				menuOver = SDL_HasIntersection(&activePos, &menuPos);
 				playOver = SDL_HasIntersection(&activePos, &playNPos);
-
 
 
 				//if the cursor is over a button, play the over sound

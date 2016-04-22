@@ -34,7 +34,7 @@ Bandit::Bandit(SDL_Renderer *renderer, string filePath, string audioPath, float 
 
 void Bandit::RemoveHealth()
 {
-	health -= 1;
+	health -= 2;
 
 	if(health <= 0)
 	{

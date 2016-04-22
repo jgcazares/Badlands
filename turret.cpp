@@ -15,6 +15,8 @@ Turret::Turret(SDL_Renderer *renderer, string filePath, string audioPath, float 
 
 	fire = Mix_LoadWAV((audioPath + "fire.wav").c_str());
 
+	hitP = Mix_LoadWAV((audioPath + "hit.wav").c_str());
+
 	string basePath = filePath + "tBase.png";
 
 	tBase = IMG_LoadTexture(renderer, basePath.c_str());
@@ -84,7 +86,9 @@ void Turret::Drop(){
 
 void Turret::RemoveHealth()
 {
-	tHealth -= 1;
+	tHealth -= 2;
+	//play the over sound
+	Mix_PlayChannel(-1, hitP, 0);
 
 	if(tHealth <= 0)
 	{

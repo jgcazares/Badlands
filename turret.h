@@ -67,6 +67,8 @@ public:
 
 	Mix_Chunk *fire;
 
+	Mix_Chunk *hitP;
+
 	//turret creation
 	Turret(SDL_Renderer *renderer, string filePath, string audioPath, float x, float y);
 
