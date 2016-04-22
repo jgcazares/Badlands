@@ -77,6 +77,7 @@ SDL_Rect bkgd1Pos, bkgd2Pos;
 float b1pos_x = 0, b1pos_y = 0;
 float b2pos_x = -1024, b2pos_y = 0;
 
+
 //MOVE THE BAKCGROUND
 void UpdateBackground(float deltaTime) {
 
@@ -205,6 +206,8 @@ bool players1Over = false, players2Over = false, instructionsOver = false,
 		quitOver = false, menuOver = false, playOver = false;
 
 vector<Explode> explodeList;
+
+
 
 int main(int argc, char* argv[]) {
 
@@ -750,6 +753,30 @@ int main(int argc, char* argv[]) {
 	// ******************** level 2 background *********************
 
 
+	// ******************** Win BACKGROUND *********************
+	// create a SDL surface to hold the background image
+	surface = IMG_Load((images_dir + "winBkgd.png").c_str());
+
+	//create an sdl texture
+	SDL_Texture *winB;
+
+	//place the surface into the texture bkgd1
+	winB = SDL_CreateTextureFromSurface(renderer, surface);
+
+	//free the sdl surface
+	SDL_FreeSurface(surface);
+
+	//create sdl rect for title
+	SDL_Rect winBPos;
+
+	//set the X Y W H for the rectangle
+	winBPos.x = 0;
+	winBPos.y = 0;
+	winBPos.w = 1024;
+	winBPos.h = 768;
+	// ******************** level 2 background *********************
+
+
 
 	// **************** Set up the gamestates *****************
 	enum GameState {MENU, PLAY, INSTRUCTIONS, BACKSTORY, WIN, LOSE, LEVEL2};
@@ -782,6 +809,8 @@ int main(int argc, char* argv[]) {
 	Bandit bandit2 = Bandit(renderer, images_dir.c_str(), audio_dir.c_str(), 500.0f, 250.0f);
 	Bandit bandit3 = Bandit(renderer, images_dir.c_str(), audio_dir.c_str(), 500.0f, 400.0f);
 	Bandit bandit4 = Bandit(renderer, images_dir.c_str(), audio_dir.c_str(), 500.0f, 550.0f);
+
+	Bandit bandit5 = Bandit(renderer, images_dir.c_str(), audio_dir.c_str(), 1600.0f, 550.0f);
 
 
 	float X_pos = 0.0f;
@@ -1433,11 +1462,9 @@ int main(int argc, char* argv[]) {
 							turret8.TankMoveX(-player2.speed, deltaTime);
 						}
 
-						////enemy tanks
-						//eTank1.eTankMoveX(-tank1.speed, deltaTime);
-						//eTank2.eTankMoveX(-tank1.speed, deltaTime);
-						//eTank3.eTankMoveX(-tank1.speed, deltaTime);
-						//eTank4.eTankMoveX(-tank1.speed, deltaTime);
+						//boss tanks
+						bandit5.eTankMoveX(-player2.speed, deltaTime);
+						
 
 
 						fuel1.TankMoveX(-player2.speed, deltaTime);
@@ -1460,11 +1487,9 @@ int main(int argc, char* argv[]) {
 						turret7.TankMoveX(player2.speed, deltaTime);
 						turret8.TankMoveX(player2.speed, deltaTime);
 
-						////enemy tanks
-						//eTank1.eTankMoveX(tank1.speed, deltaTime);
-						//eTank2.eTankMoveX(tank1.speed, deltaTime);
-						//eTank3.eTankMoveX(tank1.speed, deltaTime);
-						//eTank4.eTankMoveX(tank1.speed, deltaTime);
+						//enemy tanks
+						bandit5.eTankMoveX(player2.speed, deltaTime);
+					
 
 						fuel1.TankMoveX(player2.speed, deltaTime);
 						fuel2.TankMoveX(player2.speed, deltaTime);
@@ -1484,10 +1509,7 @@ int main(int argc, char* argv[]) {
 				turret8.Update(deltaTime, player2.posRect);
 
 				////update the enemy
-				//bandit1.Update(deltaTime, player1.posRect);
-				//bandit2.Update(deltaTime, player1.posRect);
-				//bandit3.Update(deltaTime, player1.posRect);
-				//bandit4.Update(deltaTime, player1.posRect);
+				bandit5.Update(deltaTime, player2.posRect);
 
 
 				//check for hit from turret 5
@@ -1609,6 +1631,16 @@ int main(int argc, char* argv[]) {
 				//	}
 
 
+					//bandit 5
+					if(SDL_HasIntersection(&bandit5.banditRect, &player2.bulletList[i].posRect)){
+						player2.bulletList[i].Reset();
+						if(bandit5.active == true){
+							bandit5.RemoveHealth();
+						}
+						break;
+					}
+
+
 				}
 
 
@@ -1635,6 +1667,10 @@ int main(int argc, char* argv[]) {
 				//	player1.enemyHit();
 				//}
 
+				//check to see if the player has been hit by the enemy tank
+				if(SDL_HasIntersection(&player2.posRect, &bandit5.banditRect)){
+					player2.enemyHit();
+				}
 
 				//FOLDER CODE
 				if (SDL_HasIntersection(&player2.posRect, &fuel1.powderRect) && fuel1.active == true) {
@@ -1719,6 +1755,8 @@ int main(int argc, char* argv[]) {
 				//bandit2.Draw(renderer);
 				//bandit3.Draw(renderer);
 				//bandit4.Draw(renderer);
+
+				bandit5.Draw(renderer);
 
 				//present new buffer to the screen
 				SDL_RenderPresent(renderer);
@@ -2021,6 +2059,9 @@ case INSTRUCTIONS:
 				//clear the SDL_Render target
 				SDL_RenderClear(renderer);
 
+				//draw the win Background image
+				SDL_RenderCopy(renderer, winB, NULL, &winBPos);
+
 				//draw the win text image
 				SDL_RenderCopy(renderer, winText, NULL, &winPos);
 
@@ -2088,7 +2129,7 @@ case INSTRUCTIONS:
 								//if player chooses main menu
 								if(menuOver){
 									Mix_PlayChannel(-1, pressedSound, 0);
-									win = false;
+									lose = false;
 									gameState = MENU;
 									menuOver = false;
 								}
@@ -2096,7 +2137,7 @@ case INSTRUCTIONS:
 								//if player chooses to play again
 								if(playOver){
 									Mix_PlayChannel(-1, pressedSound, 0);
-									win = false;
+									lose = false;
 									gameState = PLAY;
 									playOver = false;
 																}
