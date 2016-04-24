@@ -16,6 +16,9 @@ float deltaTime = 0.0;
 int thisTime = 0;
 int lastTime = 0;
 
+int bulletNum;
+int bullethud[];
+
 #include "time.h"
 #include "player.h"
 #include "turret.h"
@@ -204,9 +207,29 @@ void UpdateCursor(float deltaTime){
 
 //variables for all the menus button over
 bool players1Over = false, players2Over = false, instructionsOver = false,
-		quitOver = false, menuOver = false, playOver = false;
+		quitOver = false, menuOver = false, playOver = false, startOver = false;
 
 vector<Explode> explodeList;
+
+
+//explosion method
+void MakeExplosion(int x, int y) {
+	//see if there is no explosion
+	for (int i = 0; i < explodeList.size(); i++) {
+		//see if the bullet is not active
+		if (explodeList[i].active == false) {
+
+			//set explosion to active
+			explodeList[i].active == true;
+
+			explodeList[i].posRect.x = x;
+			explodeList[i].posRect.y = y;
+
+			//once explosion is found break from loop
+			break;
+		}
+	}
+}
 
 
 
@@ -432,12 +455,20 @@ int main(int argc, char* argv[]) {
 
 	//create sdl rect for title
 	SDL_Rect instructNPos;
+	SDL_Rect instructNPos2;
+
 
 	//set the X Y W H for the rectangle
 	instructNPos.x = 320;
 	instructNPos.y = 424;
 	instructNPos.w = 320;
 	instructNPos.h = 68;
+
+	//set the X Y W H for the rectangle
+	instructNPos2.x = 700;
+	instructNPos2.y = 20;
+	instructNPos2.w = 320;
+	instructNPos2.h = 68;
 
 	//////////************************ISTRUCTIONS END************************
 
@@ -473,6 +504,15 @@ int main(int argc, char* argv[]) {
 	backNPos.y = 343;
 	backNPos.w = 252;
 	backNPos.h = 71;
+
+	//create sdl rect for title
+	SDL_Rect backNPos2;
+
+	//set the X Y W H for the rectangle
+	backNPos2.x = 700;
+	backNPos2.y = 20;
+	backNPos2.w = 252;
+	backNPos2.h = 71;
 
 	//////////************************BACK STORY END************************
 
@@ -577,6 +617,41 @@ int main(int argc, char* argv[]) {
 	playNPos.y = 20;
 	playNPos.w = 297;
 	playNPos.h = 75;
+	////*********************** win menu end***********************************
+
+	/////*************Start Gmae graphics***********************
+	// create a SDL surface to hold the background image
+	surface = IMG_Load((images_dir + "start gameO.png").c_str());
+
+	//create an sdl texture
+	SDL_Texture *stN;
+
+	//place the surface into the texture bkgd1
+	stN = SDL_CreateTextureFromSurface(renderer, surface);
+
+	//free the sdl surface
+	SDL_FreeSurface(surface);
+
+	// create a SDL surface to hold the background image
+	surface = IMG_Load((images_dir + "start game.png").c_str());
+
+	//create an sdl texture
+	SDL_Texture *stO;
+
+	//place the surface into the texture bkgd1
+	stO = SDL_CreateTextureFromSurface(renderer, surface);
+
+	//free the sdl surface
+	SDL_FreeSurface(surface);
+
+	//create sdl rect for title
+	SDL_Rect stNPos;
+
+	//set the X Y W H for the rectangle
+	stNPos.x = 350;
+	stNPos.y = 20;
+	stNPos.w = 297;
+	stNPos.h = 75;
 	////*********************** win menu end***********************************
 
 
@@ -785,6 +860,7 @@ int main(int argc, char* argv[]) {
 
 
 
+
 	// **************** Set up the gamestates *****************
 	enum GameState {MENU, PLAY, INSTRUCTIONS, BACKSTORY, WIN, LOSE, LEVEL2};
 
@@ -818,6 +894,17 @@ int main(int argc, char* argv[]) {
 	Bandit bandit4 = Bandit(renderer, images_dir.c_str(), audio_dir.c_str(), 500.0f, 550.0f);
 
 	Bandit bandit5 = Bandit(renderer, images_dir.c_str(), audio_dir.c_str(), 1600.0f, 550.0f);
+
+
+	//create a pool for the explosions
+	for (int i = 0; i < 20; i++) {
+
+		//create the explosion
+		Explode tmpExplode(renderer, images_dir.c_str(), -1000, -1000);
+
+		//add to the explosion list
+		explodeList.push_back(tmpExplode);
+	}
 
 
 	float X_pos = 0.0f;
@@ -904,6 +991,99 @@ int main(int argc, char* argv[]) {
 
 	int fuelCount = 0;
 
+
+	// jewel HUD
+	SDL_Texture *bHud = IMG_LoadTexture(renderer, (images_dir + "bulletHud.png").c_str());
+	SDL_Rect bHudRect;
+	bHudRect.x = 10;
+	bHudRect.y = 650;
+	bHudRect.w = 194;
+	bHudRect.h = 90;
+
+	SDL_Texture *b1 = IMG_LoadTexture(renderer, (images_dir + "bullet1.png").c_str());
+	SDL_Rect b1Rect;
+	b1Rect.x = 10;
+	b1Rect.y = 650;
+	b1Rect.w = 194;
+	b1Rect.h = 90;
+
+	SDL_Texture *b2 = IMG_LoadTexture(renderer, (images_dir + "bullet2.png").c_str());
+	SDL_Rect b2Rect;
+	b2Rect.x = 10;
+	b2Rect.y = 650;
+	b2Rect.w = 194;
+	b2Rect.h = 90;
+
+	SDL_Texture *b3 = IMG_LoadTexture(renderer, (images_dir + "bullet3.png").c_str());
+	SDL_Rect b3Rect;
+	b3Rect.x = 10;
+	b3Rect.y = 650;
+	b3Rect.w = 194;
+	b3Rect.h = 90;
+
+	SDL_Texture *b4 = IMG_LoadTexture(renderer, (images_dir + "bullet4.png").c_str());
+	SDL_Rect b4Rect;
+	b4Rect.x = 10;
+	b4Rect.y = 650;
+	b4Rect.w = 194;
+	b4Rect.h = 90;
+
+
+	SDL_Texture *b5 = IMG_LoadTexture(renderer, (images_dir + "bullet5.png").c_str());
+	SDL_Rect b5Rect;
+	b5Rect.x = 10;
+	b5Rect.y = 650;
+	b5Rect.w = 194;
+	b5Rect.h = 90;
+
+	SDL_Texture *b6 = IMG_LoadTexture(renderer, (images_dir + "bullet6.png").c_str());
+	SDL_Rect b6Rect;
+	b6Rect.x = 10;
+	b6Rect.y = 650;
+	b6Rect.w = 194;
+	b6Rect.h = 90;
+
+	SDL_Texture *b7 = IMG_LoadTexture(renderer, (images_dir + "bullet7.png").c_str());
+	SDL_Rect b7Rect;
+	b7Rect.x = 10;
+	b7Rect.y = 650;
+	b7Rect.w = 194;
+	b7Rect.h = 90;
+
+	SDL_Texture *b8 = IMG_LoadTexture(renderer, (images_dir + "bullet8.png").c_str());
+	SDL_Rect b8Rect;
+	b8Rect.x = 10;
+	b8Rect.y = 650;
+	b8Rect.w = 194;
+	b8Rect.h = 90;
+
+	SDL_Texture *b9 = IMG_LoadTexture(renderer, (images_dir + "bullet9.png").c_str());
+	SDL_Rect b9Rect;
+	b9Rect.x = 10;
+	b9Rect.y = 650;
+	b9Rect.w = 194;
+	b9Rect.h = 90;
+
+	SDL_Texture *b10 = IMG_LoadTexture(renderer, (images_dir + "bullet10.png").c_str());
+	SDL_Rect b10Rect;
+	b10Rect.x = 10;
+	b10Rect.y = 650;
+	b10Rect.w = 194;
+	b10Rect.h = 90;
+
+	SDL_Texture *b11 = IMG_LoadTexture(renderer, (images_dir + "bullet11.png").c_str());
+	SDL_Rect b11Rect;
+	b11Rect.x = 10;
+	b11Rect.y = 650;
+	b11Rect.w = 194;
+	b11Rect.h = 90;
+
+	SDL_Texture *b12 = IMG_LoadTexture(renderer, (images_dir + "bullet12.png").c_str());
+	SDL_Rect b12Rect;
+	b12Rect.x = 10;
+	b12Rect.y = 650;
+	b12Rect.w = 194;
+	b12Rect.h = 90;
 
 
 
@@ -1079,7 +1259,7 @@ int main(int argc, char* argv[]) {
 
 			currentFuel = 0.0f;
 
-			cout << endl;
+			bulletNum = 8;
 
 			while(play)
 			{
@@ -1111,6 +1291,7 @@ int main(int argc, char* argv[]) {
 							if(e.cbutton.button == SDL_CONTROLLER_BUTTON_A)
 							{
 								player1.OnControllerButton(e.cbutton);
+								bulletNum--;
 								break;
 							}
 
@@ -1128,7 +1309,10 @@ int main(int argc, char* argv[]) {
 
 				// ************************** UPDATES *******************************
 				UpdateBackground(deltaTime);
-				player1.Update(deltaTime);
+				if (player1.active = true) {
+					player1.Update(deltaTime);
+				}
+
 
 
 
@@ -1194,6 +1378,7 @@ int main(int argc, char* argv[]) {
 						player1.bulletList[i].Reset();
 						if(turret1.active == true){
 							turret1.RemoveHealth();
+							MakeExplosion(turret1.baseRect.x, turret1.baseRect.y);
 						}
 						break;
 					}
@@ -1212,6 +1397,7 @@ int main(int argc, char* argv[]) {
 						player1.bulletList[i].Reset();
 						if(turret2.active == true){
 							turret2.RemoveHealth();
+							MakeExplosion(turret2.baseRect.x, turret2.baseRect.y);
 						}
 						break;
 					}
@@ -1230,6 +1416,7 @@ int main(int argc, char* argv[]) {
 						player1.bulletList[i].Reset();
 						if(turret3.active == true){
 							turret3.RemoveHealth();
+							MakeExplosion(turret3.baseRect.x, turret3.baseRect.y);
 						}
 						break;
 					}
@@ -1249,6 +1436,7 @@ int main(int argc, char* argv[]) {
 						player1.bulletList[i].Reset();
 						if(turret4.active == true){
 							turret4.RemoveHealth();
+							MakeExplosion(turret4.baseRect.x, turret4.baseRect.y);
 						}
 						break;
 					}
@@ -1339,6 +1527,17 @@ int main(int argc, char* argv[]) {
 					gameState = LEVEL2;
 				}
 
+				//update the pool of explosions
+				for (int i = 0; i < explodeList.size(); i++) {
+
+					//check to see if active
+					if (explodeList[i].active = true) {
+						//draw explosion
+						explodeList[i].Update(deltaTime);
+					}
+				}
+
+
 
 				// ************************ START THE SDL DRAW PROCESS *****************
 				//clear the SDL_Render target
@@ -1348,6 +1547,47 @@ int main(int argc, char* argv[]) {
 				SDL_RenderCopy(renderer, level1, NULL, &level1Pos);
 
 				SDL_RenderCopy(renderer, bagbkgd, NULL, &bagbkgdRect);
+
+				/////  BULLET HUD GRAPHICS //////////////////////////////////////////////
+				if (bulletNum = 12) {
+					SDL_RenderCopy(renderer, b12, NULL, &b12Rect);
+				}
+				else if (bulletNum = 11) {
+					SDL_RenderCopy(renderer, b11, NULL, &b11Rect);
+				}
+				else if(bulletNum = 10) {
+					SDL_RenderCopy(renderer, b10, NULL, &b10Rect);
+				}
+				else if(bulletNum = 9) {
+					SDL_RenderCopy(renderer, b9, NULL, &b9Rect);
+				}
+				else if(bulletNum = 8) {
+					SDL_RenderCopy(renderer, b8, NULL, &b8Rect);
+				}
+				else if(bulletNum = 7) {
+					SDL_RenderCopy(renderer, b7, NULL, &b7Rect);
+				}
+				else if(bulletNum = 6) {
+					SDL_RenderCopy(renderer, b6, NULL, &b6Rect);
+				}
+				else if(bulletNum = 5) {
+					SDL_RenderCopy(renderer, b5, NULL, &b5Rect);
+				}
+				else if(bulletNum = 4) {
+					SDL_RenderCopy(renderer, b4, NULL, &b4Rect);
+				}
+				else if(bulletNum = 3) {
+					SDL_RenderCopy(renderer, b3, NULL, &b3Rect);
+				}
+				else if(bulletNum = 2) {
+					SDL_RenderCopy(renderer, b2, NULL, &b2Rect);
+				}
+				else if(bulletNum = 1) {
+					SDL_RenderCopy(renderer, b1, NULL, &b1Rect);
+				}
+				else if(bulletNum = 0) {
+					SDL_RenderCopy(renderer, bHud, NULL, &bHudRect);
+				}
 
 				//draw the pruple UI
 				if (haveBag1)
@@ -1389,6 +1629,17 @@ int main(int argc, char* argv[]) {
 				bandit2.Draw(renderer);
 				bandit3.Draw(renderer);
 				bandit4.Draw(renderer);
+
+
+				//update the pool of explosions
+				for (int i = 0; i < explodeList.size(); i++) {
+
+					//check to see if active
+					if (explodeList[i].active = true) {
+						//draw explosion
+						explodeList[i].Draw(renderer);
+					}
+				}
 
 				//present new buffer to the screen
 				SDL_RenderPresent(renderer);
@@ -1824,6 +2075,18 @@ int main(int argc, char* argv[]) {
 									gameState = MENU;
 									menuOver = false;
 								}
+								if (instructionsOver) {
+									Mix_PlayChannel(-1, pressedSound, 0);
+									backstory = false;
+									gameState = BACKSTORY;
+									instructionsOver = false;
+								}
+								if (startOver) {
+									Mix_PlayChannel(-1, pressedSound, 0);
+									backstory = false;
+									gameState = PLAY;
+									startOver = false;
+								}
 							}
 
 						}//end joystick check
@@ -1846,12 +2109,14 @@ int main(int argc, char* argv[]) {
 				UpdateCursor(deltaTime);
 
 				menuOver = SDL_HasIntersection(&activePos, &menuPos);
+				instructionsOver = SDL_HasIntersection(&activePos, &instructNPos2);
+				startOver = SDL_HasIntersection(&activePos, &stNPos);
 
 
 				//if the cursor is over a button, play the over sound
 				if (menuOver) {
 					if (alreadyOver == false) {
-						Mix_PlayChannel(-1, overSound, 0);
+						//Mix_PlayChannel(-1, overSound, 0);
 						alreadyOver = true;
 					}
 				}
@@ -1860,6 +2125,33 @@ int main(int argc, char* argv[]) {
 				if (!menuOver) {
 					alreadyOver = false;
 				}
+
+				//if the cursor is over a button, play the over sound
+				if (instructionsOver) {
+					if (alreadyOver == false) {
+						//Mix_PlayChannel(-1, overSound, 0);
+						alreadyOver = true;
+					}
+				}
+				//if the cursor is not over any button reset the alreadyOver var
+				if (!instructionsOver) {
+					alreadyOver = false;
+				}
+
+				//if the cursor is over a button, play the over sound
+				if (startOver) {
+					if (alreadyOver == false) {
+						//Mix_PlayChannel(-1, overSound, 0);
+						alreadyOver = true;
+					}
+				}
+
+				//if the cursor is not over any button reset the alreadyOver var
+				if (!startOver) {
+					alreadyOver = false;
+				}
+
+
 
 				// ************************ START THE SDL DRAW PROCESS *****************
 				//clear the SDL_Render target
@@ -1873,6 +2165,20 @@ int main(int argc, char* argv[]) {
 				}
 				else {
 					SDL_RenderCopy(renderer, menuN, NULL, &menuPos);
+				}
+				//draw the background
+				if (instructionsOver) {
+					SDL_RenderCopy(renderer, instructO, NULL, &instructNPos2);
+				}
+				else {
+					SDL_RenderCopy(renderer, instructN, NULL, &instructNPos2);
+				}
+				//draw the background
+				if (startOver) {
+					SDL_RenderCopy(renderer, stO, NULL, &stNPos);
+				}
+				else {
+					SDL_RenderCopy(renderer, stN, NULL, &stNPos);
 				}
 
 				//draw the cursor  cursor
@@ -1923,8 +2229,22 @@ case INSTRUCTIONS:
 							instructions = false;
 							gameState = MENU;
 							menuOver = false;
+	
+						}
+						if (players2Over) {
+							Mix_PlayChannel(-1, pressedSound, 0);
+							instructions = false;
+							gameState = INSTRUCTIONS;
+							players2Over = false;
+						}
+						if (startOver) {
+							Mix_PlayChannel(-1, pressedSound, 0);
+							instructions = false;
+							gameState = PLAY;
+							startOver = false;
 						}
 					}
+					
 
 				}//end joystick check
 				break;
@@ -1945,18 +2265,45 @@ case INSTRUCTIONS:
 		UpdateCursor(deltaTime);
 
 		menuOver = SDL_HasIntersection(&activePos, &menuPos);
+		players2Over = SDL_HasIntersection(&activePos, &backNPos2);
+		startOver = SDL_HasIntersection(&activePos, &stNPos);
 
 
 		//if the cursor is over a button, play the over sound
 		if (menuOver) {
 			if (alreadyOver == false) {
-				Mix_PlayChannel(-1, overSound, 0);
+				//Mix_PlayChannel(-1, overSound, 0);
 				alreadyOver = true;
 			}
 		}
 
 		//if the cursor is not over any button reset the alreadyOver var
 		if (!menuOver) {
+			alreadyOver = false;
+		}
+
+		//if the cursor is over a button, play the over sound
+		if (players2Over) {
+			if (alreadyOver == false) {
+				//Mix_PlayChannel(-1, overSound, 0);
+				alreadyOver = true;
+			}
+		}
+		//if the cursor is not over any button reset the alreadyOver var
+		if (!players2Over) {
+			alreadyOver = false;
+		}
+
+		//if the cursor is over a button, play the over sound
+		if (startOver) {
+			if (alreadyOver == false) {
+				//Mix_PlayChannel(-1, overSound, 0);
+				alreadyOver = true;
+			}
+		}
+
+		//if the cursor is not over any button reset the alreadyOver var
+		if (!startOver) {
 			alreadyOver = false;
 		}
 
@@ -1972,6 +2319,20 @@ case INSTRUCTIONS:
 		}
 		else {
 			SDL_RenderCopy(renderer, menuN, NULL, &menuPos);
+		}
+		//draw the background
+		if (players2Over) {
+			SDL_RenderCopy(renderer, backO, NULL, &backNPos2);
+		}
+		else {
+			SDL_RenderCopy(renderer, backN, NULL, &backNPos2);
+		}
+		//draw the background
+		if (startOver) {
+			SDL_RenderCopy(renderer, stO, NULL, &stNPos);
+		}
+		else {
+			SDL_RenderCopy(renderer, stN, NULL, &stNPos);
 		}
 
 		//draw the cursor  cursor

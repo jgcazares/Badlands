@@ -76,13 +76,6 @@ Turret::Turret(SDL_Renderer *renderer, string filePath, string audioPath, float 
 
 }
 
-void Turret::Drop(){
-
-	powderDropped = true;
-
-	powderRect.x = baseRect.x;
-
-}
 
 void Turret::RemoveHealth()
 {
@@ -93,7 +86,7 @@ void Turret::RemoveHealth()
 	if(tHealth <= 0)
 	{
 		Reset();
-		Drop();
+		
 	}
 }
 
