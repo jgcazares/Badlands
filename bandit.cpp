@@ -53,6 +53,18 @@ void Bandit::Reset()
 	active = false;
 }
 
+void Bandit::Restart(){
+	active = true;
+
+	banditRect.x = x;
+	banditRect.y = y;
+
+	posT_X = banditRect.x;
+	posT_Y = banditRect.y;
+
+	health = 10;
+}
+
 void Bandit::eTankMoveX(float tankSpeed, float deltaTime)
 {
 	posT_X +=(tankSpeed)*deltaTime;

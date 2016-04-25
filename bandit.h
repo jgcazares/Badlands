@@ -67,6 +67,7 @@ public:
 
 	//reset the tank
 	void Reset();
+	void Restart();
 
 	//remove health
 	void RemoveHealth();

@@ -273,6 +273,14 @@ void Player::OnControllerAxis(Sint16 X, Sint16 Y)
 			Yvalue = 0.0f;
 		}
 }
+void Player::Reset(){
+	posRect.x = 100.0;
+	posRect.y = 350.0;
+
+	pos_X = posRect.x;
+	pos_Y = posRect.y;
+	playerHealth = 150.0f;
+}
 
 
 

@@ -17,7 +17,7 @@ int thisTime = 0;
 int lastTime = 0;
 
 int bulletNum;
-int bullethud[];
+
 
 #include "time.h"
 #include "player.h"
@@ -31,6 +31,7 @@ int bullethud[];
 #include <SDL2_image/SDL_image.h>
 #include <SDL2_mixer/SDL_mixer.h>
 #include <SDL2_ttf/SDL_ttf.h>
+#include <unistd.h>
 
 ///string variable to hold the current working directory on APPLE
 string currentWorkingDirectory(getcwd(NULL,0));
@@ -285,12 +286,12 @@ int main(int argc, char* argv[]) {
 	//set up a sound effect of the button pressed state
 	Mix_Chunk *pickUpSound =Mix_LoadWAV((audio_dir + "pickUp.wav").c_str());
 
-	//load music file
-	Mix_Music *menuM = Mix_LoadMUS((audio_dir + "ambientM.wav").c_str());
-
-	//if the music file is not playing play it
-	if(!Mix_PlayingMusic())
-		Mix_PlayMusic(menuM, -1);
+//	//load music file
+//	Mix_Music *menuM = Mix_LoadMUS((audio_dir + "ambientM.wav").c_str());
+//
+//	//if the music file is not playing play it
+//	if(!Mix_PlayingMusic())
+//		Mix_PlayMusic(menuM, -1);
 
 	//bool value to control the over sound effect
 	bool alreadyOver = false;
@@ -1261,6 +1262,9 @@ int main(int argc, char* argv[]) {
 
 			bulletNum = 8;
 
+			player1.Reset();
+
+
 			while(play)
 			{
 				//create delta time for framerate independence
@@ -1652,7 +1656,7 @@ int main(int argc, char* argv[]) {
 
 			Level2 = true;
 
-			cout << endl;
+			player2.Reset();
 
 			while(Level2)
 			{
