@@ -220,7 +220,7 @@ void MakeExplosion(int x, int y) {
 		if (explodeList[i].active == false) {
 
 			//set explosion to active
-			explodeList[i].active == true;
+			explodeList[i].active = true;
 
 			explodeList[i].posRect.x = x;
 			explodeList[i].posRect.y = y;
@@ -285,12 +285,12 @@ int main(int argc, char* argv[]) {
 	//set up a sound effect of the button pressed state
 	Mix_Chunk *pickUpSound =Mix_LoadWAV((audio_dir + "pickUp.wav").c_str());
 
-//	//load music file
-//	Mix_Music *menuM = Mix_LoadMUS((audio_dir + "ambientM.wav").c_str());
-//
-//	//if the music file is not playing play it
-//	if(!Mix_PlayingMusic())
-//		Mix_PlayMusic(menuM, -1);
+	//load music file
+	Mix_Music *menuM = Mix_LoadMUS((audio_dir + "ambientM.wav").c_str());
+
+	//if the music file is not playing play it
+	if(!Mix_PlayingMusic())
+		Mix_PlayMusic(menuM, -1);
 
 	//bool value to control the over sound effect
 	bool alreadyOver = false;
@@ -900,7 +900,7 @@ int main(int argc, char* argv[]) {
 	for (int i = 0; i < 20; i++) {
 
 		//create the explosion
-		Explode tmpExplode(renderer, images_dir.c_str(), -1000, -1000);
+		Explode tmpExplode(renderer, images_dir, -1000, -1000);
 
 		//add to the explosion list
 		explodeList.push_back(tmpExplode);
@@ -1531,7 +1531,7 @@ int main(int argc, char* argv[]) {
 				for (int i = 0; i < explodeList.size(); i++) {
 
 					//check to see if active
-					if (explodeList[i].active = true) {
+					if (explodeList[i].active == true) {
 						//draw explosion
 						explodeList[i].Update(deltaTime);
 					}
@@ -2018,10 +2018,6 @@ int main(int argc, char* argv[]) {
 				turret7.Draw(renderer);
 				turret8.Draw(renderer);
 
-				//bandit1.Draw(renderer);
-				//bandit2.Draw(renderer);
-				//bandit3.Draw(renderer);
-				//bandit4.Draw(renderer);
 
 				bandit5.Draw(renderer);
 
@@ -2078,7 +2074,7 @@ int main(int argc, char* argv[]) {
 								if (instructionsOver) {
 									Mix_PlayChannel(-1, pressedSound, 0);
 									backstory = false;
-									gameState = BACKSTORY;
+									gameState = INSTRUCTIONS;
 									instructionsOver = false;
 								}
 								if (startOver) {
@@ -2234,7 +2230,7 @@ case INSTRUCTIONS:
 						if (players2Over) {
 							Mix_PlayChannel(-1, pressedSound, 0);
 							instructions = false;
-							gameState = INSTRUCTIONS;
+							gameState = BACKSTORY;
 							players2Over = false;
 						}
 						if (startOver) {
