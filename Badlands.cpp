@@ -77,10 +77,15 @@ string audio_dir = currentWorkingDirectory + "/src/Badlands/";
 int bkgdSpeed = 100;
 
 SDL_Rect bkgd1Pos, bkgd2Pos;
+SDL_Rect lose1Pos, lose2Pos;
 
 //background floats
 float b1pos_x = 0, b1pos_y = 0;
 float b2pos_x = -1024, b2pos_y = 0;
+
+//background floats
+float l1pos_x = 0, l1pos_y = 0;
+float l2pos_x = 0, l2pos_y = -768;
 
 
 //MOVE THE BAKCGROUND
@@ -115,6 +120,44 @@ void UpdateBackground(float deltaTime) {
 
 		bkgd1Pos.x = -1024;
 		b2pos_x = bkgd2Pos.x;
+
+
+	}
+
+}
+
+//MOVE THE BAKCGROUND
+void UpdateLose(float deltaTime) {
+
+	//Update the bkgd 1
+	l1pos_y += (bkgdSpeed * 1) * deltaTime;
+
+	//set the new bkgd10 poition
+	lose1Pos.y = (int)(l1pos_y + 0.5f);
+
+	//reset when off the bottom of the screen
+	if (lose1Pos.y >= 768)
+	{
+
+		lose1Pos.y = -768;
+		l1pos_y = lose1Pos.y;
+
+
+	}
+
+
+	//Update the bkgd 2
+	l2pos_y += (bkgdSpeed * 1) * deltaTime;
+
+	//set the new bkgd10 poition
+	lose2Pos.y = (int)(l2pos_y + 0.5f);
+
+	//reset when off the bottom of the screen
+	if (lose2Pos.y >= 768)
+	{
+
+		lose1Pos.y = -768;
+		l2pos_y = lose2Pos.y;
 
 
 	}
@@ -286,12 +329,12 @@ int main(int argc, char* argv[]) {
 	//set up a sound effect of the button pressed state
 	Mix_Chunk *pickUpSound =Mix_LoadWAV((audio_dir + "pickUp.wav").c_str());
 
-//	//load music file
-//	Mix_Music *menuM = Mix_LoadMUS((audio_dir + "ambientM.wav").c_str());
-//
-//	//if the music file is not playing play it
-//	if(!Mix_PlayingMusic())
-//		Mix_PlayMusic(menuM, -1);
+	//load music file
+	Mix_Music *menuM = Mix_LoadMUS((audio_dir + "battle.wav").c_str());
+
+	//if the music file is not playing play it
+	if(!Mix_PlayingMusic())
+		Mix_PlayMusic(menuM, -1);
 
 	//bool value to control the over sound effect
 	bool alreadyOver = false;
@@ -299,7 +342,7 @@ int main(int argc, char* argv[]) {
 
 	//***********CREATE BACKGROUND************
 	// create a SDL surface to hold the background image
-	SDL_Surface *surface = IMG_Load((images_dir + "desert.png").c_str());
+	SDL_Surface *surface = IMG_Load((images_dir + "desert2.png").c_str());
 
 	//create an sdl texture
 	SDL_Texture *bkgd1;
@@ -329,6 +372,40 @@ int main(int argc, char* argv[]) {
 	bkgd2Pos.y = 0;
 	bkgd2Pos.w = 1024;
 	bkgd2Pos.h = 768;
+
+	//////***********************************CREATE lose END *******************
+
+	// create a SDL surface to hold the background image
+	SDL_Surface *loseS = IMG_Load((images_dir + "loseScreen.png").c_str());
+
+	//create an sdl texture
+	SDL_Texture *ls1;
+
+	//place the surface into the texture bkgd1
+	ls1 = SDL_CreateTextureFromSurface(renderer, loseS);
+
+	//create an sdl texture
+	SDL_Texture *ls2;
+
+	//place the surface into the texture bkgd1
+	ls2 = SDL_CreateTextureFromSurface(renderer, loseS);
+
+	//free the sdl surface
+	SDL_FreeSurface(surface);
+
+	//set the X Y W H for the rectangle
+	lose1Pos.x = 0;
+	lose1Pos.y = 0;
+	lose1Pos.w = 1024;
+	lose1Pos.h = 768;
+
+
+
+	//set the X Y W H for the rectangle
+	lose2Pos.x = 0;
+	lose2Pos.y = -768;
+	lose2Pos.w = 1024;
+	lose2Pos.h = 768;
 
 	//////***********************************CREATE BAKCGROUND END *******************
 
@@ -789,7 +866,7 @@ int main(int argc, char* argv[]) {
 
 	// ******************** Backstory BACKGROUND *********************
 	// create a SDL surface to hold the background image
-	surface = IMG_Load((images_dir + "backStoryBkgd.png").c_str());
+	surface = IMG_Load((images_dir + "backBkgd.png").c_str());
 
 	//create an sdl texture
 	SDL_Texture *backStory;
@@ -804,17 +881,17 @@ int main(int argc, char* argv[]) {
 	SDL_Rect backSPos;
 
 	//set the X Y W H for the rectangle
-	backSPos.x = 0;
-	backSPos.y = 0;
-	backSPos.w = 1024;
-	backSPos.h = 768;
+	backSPos.x = 50;
+	backSPos.y = 100;
+	backSPos.w = 944;
+	backSPos.h = 568;
 	// ******************** level 2 background *********************
 
 
 
 	// ******************** instructions BACKGROUND *********************
 	// create a SDL surface to hold the background image
-	surface = IMG_Load((images_dir + "insBkgd.png").c_str());
+	surface = IMG_Load((images_dir + "inBkgd.png").c_str());
 
 	//create an sdl texture
 	SDL_Texture *insB;
@@ -829,10 +906,10 @@ int main(int argc, char* argv[]) {
 	SDL_Rect insBPos;
 
 	//set the X Y W H for the rectangle
-	insBPos.x = 0;
-	insBPos.y = 0;
-	insBPos.w = 1024;
-	insBPos.h = 768;
+	insBPos.x = 100;
+	insBPos.y = 300;
+	insBPos.w = 869;
+	insBPos.h = 315;
 	// ******************** level 2 background *********************
 
 
@@ -1382,7 +1459,7 @@ int main(int argc, char* argv[]) {
 						player1.bulletList[i].Reset();
 						if(turret1.active == true){
 							turret1.RemoveHealth();
-							MakeExplosion(turret1.baseRect.x, turret1.baseRect.y);
+							MakeExplosion(turret1.baseRect.x-32, turret1.baseRect.y-32);
 						}
 						break;
 					}
@@ -1553,7 +1630,7 @@ int main(int argc, char* argv[]) {
 				SDL_RenderCopy(renderer, bagbkgd, NULL, &bagbkgdRect);
 
 				/////  BULLET HUD GRAPHICS //////////////////////////////////////////////
-				if (bulletNum = 12) {
+				/*if (bulletNum = 12) {
 					SDL_RenderCopy(renderer, b12, NULL, &b12Rect);
 				}
 				else if (bulletNum = 11) {
@@ -1590,8 +1667,8 @@ int main(int argc, char* argv[]) {
 					SDL_RenderCopy(renderer, b1, NULL, &b1Rect);
 				}
 				else if(bulletNum = 0) {
-					SDL_RenderCopy(renderer, bHud, NULL, &bHudRect);
-				}
+					SDL_RenderCopy(renderer, bHud, NULL, &bHudRect);*/
+			//	}
 
 				//draw the pruple UI
 				if (haveBag1)
@@ -2157,6 +2234,13 @@ int main(int argc, char* argv[]) {
 				//clear the SDL_Render target
 				SDL_RenderClear(renderer);
 
+
+				//draw the bkgd image
+				SDL_RenderCopy(renderer, bkgd1, NULL, &bkgd1Pos);
+
+				//draw the bkgd2 image
+				SDL_RenderCopy(renderer, bkgd2, NULL, &bkgd2Pos);
+
 				SDL_RenderCopy(renderer, backStory, NULL, &backSPos);
 
 				//draw the background
@@ -2310,6 +2394,12 @@ case INSTRUCTIONS:
 		 // ************************ START THE SDL DRAW PROCESS *****************
 		 //clear the SDL_Render target
 		SDL_RenderClear(renderer);
+
+		//draw the bkgd image
+		SDL_RenderCopy(renderer, bkgd1, NULL, &bkgd1Pos);
+
+		//draw the bkgd2 image
+		SDL_RenderCopy(renderer, bkgd2, NULL, &bkgd2Pos);
 
 		SDL_RenderCopy(renderer, insB, NULL, &insBPos);
 
@@ -2533,6 +2623,7 @@ case INSTRUCTIONS:
 
 				//****************************UPDATE SECTION*******************************
 				UpdateBackground(deltaTime);
+				UpdateLose(deltaTime);
 
 				//curosr
 				UpdateCursor(deltaTime);
@@ -2557,6 +2648,12 @@ case INSTRUCTIONS:
 				// ************************ START THE SDL DRAW PROCESS *****************
 				//clear the SDL_Render target
 				SDL_RenderClear(renderer);
+
+				//draw the bkgd image
+				SDL_RenderCopy(renderer, ls1, NULL, &lose1Pos);
+
+				//draw the bkgd2 image
+				SDL_RenderCopy(renderer, ls2, NULL, &lose2Pos);
 
 				//draw the win text image
 				SDL_RenderCopy(renderer, loseText, NULL, &losePos);
