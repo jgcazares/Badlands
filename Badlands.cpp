@@ -311,13 +311,13 @@ int main(int argc, char* argv[]) {
 	Mix_Chunk *pressedSound =Mix_LoadWAV((audio_dir + "pressed.wav").c_str());
 
 	//set up a sound effect of the button pressed state
-	Mix_Chunk *winSound =Mix_LoadWAV((audio_dir + "winM.wav").c_str());
+	//Mix_Chunk *winSound =Mix_LoadWAV((audio_dir + "winM.wav").c_str());
 
 	//set up a sound effect of the button pressed state
 	Mix_Chunk *pickUpSound =Mix_LoadWAV((audio_dir + "pickUp.wav").c_str());
 
 	//load music file
-	Mix_Music *menuM = Mix_LoadMUS((audio_dir + "battle.wav").c_str());
+	Mix_Music *menuM = Mix_LoadMUS((audio_dir + "battle.mp3").c_str());
 
 	//if the music file is not playing play it
 	if(!Mix_PlayingMusic())
@@ -934,10 +934,6 @@ int main(int argc, char* argv[]) {
 
 	//bool values to allow movement through the individual states
 	bool menu, play, instructions, backstory, win , lose, Level2;
-
-
-	
-
 
 	Player player1 = Player(renderer, 0, images_dir.c_str(), audio_dir.c_str(), 100.0, 350.0);
 	Player player2 = Player(renderer, 0, images_dir.c_str(), audio_dir.c_str(), 100.0, 350.0);
@@ -1604,16 +1600,16 @@ int main(int argc, char* argv[]) {
 				}
 
 				
-				if (ex1.active = true && turret1.e1K == true) {
+				if (ex1.active == true && turret1.e1K == true) {
 					ex1.Update(deltaTime);
 				}
-				if (ex2.active = true && turret2.e1K == true) {
+				if (ex2.active == true && turret2.e1K == true) {
 					ex2.Update(deltaTime);
 				}
-				if (ex3.active = true && turret3.e1K == true) {
+				if (ex3.active == true && turret3.e1K == true) {
 					ex3.Update(deltaTime);
 				}
-				if (ex4.active = true && turret4.e1K == true) {
+				if (ex4.active == true && turret4.e1K == true) {
 					ex4.Update(deltaTime);
 				}
 
@@ -1711,16 +1707,16 @@ int main(int argc, char* argv[]) {
 
 
 			
-				if (ex1.active = true && turret1.e1K == true) {
+				if (ex1.active == true && turret1.e1K == true) {
 					ex1.Draw(renderer);
 				}
-				if (ex2.active = true && turret2.e1K == true) {
+				if (ex2.active == true && turret2.e1K == true) {
 					ex2.Draw(renderer);
 				}
-				if (ex3.active = true && turret3.e1K == true) {
+				if (ex3.active == true && turret3.e1K == true) {
 					ex3.Draw(renderer);
 				}
-				if (ex4.active = true && turret4.e1K == true) {
+				if (ex4.active == true && turret4.e1K == true) {
 					ex4.Draw(renderer);
 				}
 				//present new buffer to the screen
@@ -1799,16 +1795,16 @@ int main(int argc, char* argv[]) {
 						level2Pos.x = (int)(X_pos + 0.5f);
 						
 						//move the turret
-						if (turret5.active = true) {
+						if (turret5.active == true) {
 							turret5.TankMoveX(-player2.speed, deltaTime);
 						}
-						if (turret6.active = true) {
+						if (turret6.active == true) {
 							turret6.TankMoveX(-player2.speed, deltaTime);
 						}
-						if (turret7.active = true) {
+						if (turret7.active == true) {
 							turret7.TankMoveX(-player2.speed, deltaTime);
 						}
-						if (turret8.active = true) {
+						if (turret8.active == true) {
 							turret8.TankMoveX(-player2.speed, deltaTime);
 						}
 
@@ -2019,16 +2015,16 @@ int main(int argc, char* argv[]) {
 					gameState = WIN;
 				}
 
-				if (ex5.active = true && turret5.e1K == true) {
+				if (ex5.active == true && turret5.e1K == true) {
 					ex5.Update(deltaTime);
 				}
-				if (ex6.active = true && turret6.e1K == true) {
+				if (ex6.active == true && turret6.e1K == true) {
 					ex6.Update(deltaTime);
 				}
-				if (ex7.active = true && turret7.e1K == true) {
+				if (ex7.active == true && turret7.e1K == true) {
 					ex7.Update(deltaTime);
 				}
-				if (ex8.active = true && turret8.e1K == true) {
+				if (ex8.active == true && turret8.e1K == true) {
 					ex8.Update(deltaTime);
 				}
 
@@ -2069,16 +2065,16 @@ int main(int argc, char* argv[]) {
 
 				bandit5.Draw(renderer);
 
-				if (ex5.active = true && turret5.e1K == true) {
+				if (ex5.active == true && turret5.e1K == true) {
 					ex5.Draw(renderer);
 				}
-				if (ex6.active = true && turret6.e1K == true) {
+				if (ex6.active == true && turret6.e1K == true) {
 					ex6.Draw(renderer);
 				}
-				if (ex7.active = true && turret7.e1K == true) {
+				if (ex7.active == true && turret7.e1K == true) {
 					ex7.Draw(renderer);
 				}
-				if (ex8.active = true && turret8.e1K == true) {
+				if (ex8.active == true && turret8.e1K == true) {
 					ex8.Draw(renderer);
 				}
 
