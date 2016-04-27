@@ -34,6 +34,8 @@ class Turret {
 public:
 	//is the turret active still alive
 	bool active;
+	bool e1K;
+
 
 	bool powderDropped;
 

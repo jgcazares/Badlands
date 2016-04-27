@@ -7,6 +7,8 @@ Turret::Turret(SDL_Renderer *renderer, string filePath, string audioPath, float 
 
 	//activate
 	active = true;
+	e1K = false;
+
 	
 
 	tHealth = 10;
@@ -86,7 +88,7 @@ void Turret::RemoveHealth()
 	if(tHealth <= 0)
 	{
 		Reset();
-		
+		e1K = true;
 	}
 }
 
