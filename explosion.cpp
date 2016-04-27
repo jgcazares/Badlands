@@ -42,7 +42,7 @@ Explode::Explode(SDL_Renderer *renderer, string filePath, float x, float y)
 	frameHeight = 190;
 
 	//original draw rectangle used to draw one frame of the animation strip
-	drawRect.x = 0;
+	drawRect.x = 196;
 	drawRect.y = 0;
 	drawRect.w = frameWidth;
 	drawRect.h = frameHeight;

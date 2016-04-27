@@ -18,6 +18,8 @@ int lastTime = 0;
 
 int bulletNum;
 
+//bool e1K = false, e2K = false, e3K = false, e4K = false;
+
 
 #include "time.h"
 #include "player.h"
@@ -256,24 +258,9 @@ bool players1Over = false, players2Over = false, instructionsOver = false,
 vector<Explode> explodeList;
 
 
-//explosion method
-void MakeExplosion(int x, int y) {
-	//see if there is no explosion
-	for (int i = 0; i < explodeList.size(); i++) {
-		//see if the bullet is not active
-		if (explodeList[i].active == false) {
 
-			//set explosion to active
-			explodeList[i].active = true;
 
-			explodeList[i].posRect.x = x;
-			explodeList[i].posRect.y = y;
 
-			//once explosion is found break from loop
-			break;
-		}
-	}
-}
 
 
 
@@ -949,7 +936,7 @@ int main(int argc, char* argv[]) {
 	bool menu, play, instructions, backstory, win , lose, Level2;
 
 
-
+	
 
 
 	Player player1 = Player(renderer, 0, images_dir.c_str(), audio_dir.c_str(), 100.0, 350.0);
@@ -973,16 +960,18 @@ int main(int argc, char* argv[]) {
 
 	Bandit bandit5 = Bandit(renderer, images_dir.c_str(), audio_dir.c_str(), 1600.0f, 550.0f);
 
+	
+	Explode ex1(renderer, images_dir, 810, 70);
+	Explode ex2(renderer, images_dir, 810, 220);
+	Explode ex3(renderer, images_dir, 810, 470);
+	Explode ex4(renderer, images_dir, 810, 620);
 
-	//create a pool for the explosions
-	for (int i = 0; i < 20; i++) {
-
-		//create the explosion
-		Explode tmpExplode(renderer, images_dir, -1000, -1000);
-
-		//add to the explosion list
-		explodeList.push_back(tmpExplode);
-	}
+	
+	Explode ex5(renderer, images_dir, 1800, 70);
+	Explode ex6(renderer, images_dir, 1800, 220);
+	Explode ex7(renderer, images_dir, 1800, 470);
+	Explode ex8(renderer, images_dir, 1800, 620);
+	
 
 
 	float X_pos = 0.0f;
@@ -1078,6 +1067,8 @@ int main(int argc, char* argv[]) {
 	bHudRect.w = 194;
 	bHudRect.h = 90;
 
+	
+
 	SDL_Texture *b1 = IMG_LoadTexture(renderer, (images_dir + "bullet1.png").c_str());
 	SDL_Rect b1Rect;
 	b1Rect.x = 10;
@@ -1163,6 +1154,7 @@ int main(int argc, char* argv[]) {
 	b12Rect.w = 194;
 	b12Rect.h = 90;
 
+	/*SDL_Texture *b[13] = {bHud, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12};*/
 
 
 	// ******************* ENTER THE PROGRAM LOOP ***************************
@@ -1337,10 +1329,14 @@ int main(int argc, char* argv[]) {
 
 			currentFuel = 0.0f;
 
-			bulletNum = 8;
+			bulletNum = 12;
 
 			player1.Reset();
 
+			ex1.active = false;
+			ex2.active = false;
+			ex3.active = false;
+			ex4.active = false;
 
 			while(play)
 			{
@@ -1372,7 +1368,6 @@ int main(int argc, char* argv[]) {
 							if(e.cbutton.button == SDL_CONTROLLER_BUTTON_A)
 							{
 								player1.OnControllerButton(e.cbutton);
-								bulletNum--;
 								break;
 							}
 
@@ -1393,8 +1388,6 @@ int main(int argc, char* argv[]) {
 				if (player1.active = true) {
 					player1.Update(deltaTime);
 				}
-
-
 
 
 				turret1.Update(deltaTime, player1.posRect);
@@ -1459,8 +1452,10 @@ int main(int argc, char* argv[]) {
 						player1.bulletList[i].Reset();
 						if(turret1.active == true){
 							turret1.RemoveHealth();
-							MakeExplosion(turret1.baseRect.x-32, turret1.baseRect.y-32);
+							ex1.active = true;
+							
 						}
+						
 						break;
 					}
 
@@ -1478,7 +1473,7 @@ int main(int argc, char* argv[]) {
 						player1.bulletList[i].Reset();
 						if(turret2.active == true){
 							turret2.RemoveHealth();
-							MakeExplosion(turret2.baseRect.x, turret2.baseRect.y);
+							ex2.active = true;
 						}
 						break;
 					}
@@ -1497,7 +1492,7 @@ int main(int argc, char* argv[]) {
 						player1.bulletList[i].Reset();
 						if(turret3.active == true){
 							turret3.RemoveHealth();
-							MakeExplosion(turret3.baseRect.x, turret3.baseRect.y);
+							ex3.active = true;
 						}
 						break;
 					}
@@ -1517,7 +1512,7 @@ int main(int argc, char* argv[]) {
 						player1.bulletList[i].Reset();
 						if(turret4.active == true){
 							turret4.RemoveHealth();
-							MakeExplosion(turret4.baseRect.x, turret4.baseRect.y);
+							ex4.active = true;
 						}
 						break;
 					}
@@ -1608,16 +1603,19 @@ int main(int argc, char* argv[]) {
 					gameState = LEVEL2;
 				}
 
-				//update the pool of explosions
-				for (int i = 0; i < explodeList.size(); i++) {
-
-					//check to see if active
-					if (explodeList[i].active == true) {
-						//draw explosion
-						explodeList[i].Update(deltaTime);
-					}
+				
+				if (ex1.active = true && turret1.e1K == true) {
+					ex1.Update(deltaTime);
 				}
-
+				if (ex2.active = true && turret2.e1K == true) {
+					ex2.Update(deltaTime);
+				}
+				if (ex3.active = true && turret3.e1K == true) {
+					ex3.Update(deltaTime);
+				}
+				if (ex4.active = true && turret4.e1K == true) {
+					ex4.Update(deltaTime);
+				}
 
 
 				// ************************ START THE SDL DRAW PROCESS *****************
@@ -1629,46 +1627,46 @@ int main(int argc, char* argv[]) {
 
 				SDL_RenderCopy(renderer, bagbkgd, NULL, &bagbkgdRect);
 
-				/////  BULLET HUD GRAPHICS //////////////////////////////////////////////
-				/*if (bulletNum = 12) {
-					SDL_RenderCopy(renderer, b12, NULL, &b12Rect);
-				}
-				else if (bulletNum = 11) {
-					SDL_RenderCopy(renderer, b11, NULL, &b11Rect);
-				}
-				else if(bulletNum = 10) {
-					SDL_RenderCopy(renderer, b10, NULL, &b10Rect);
-				}
-				else if(bulletNum = 9) {
-					SDL_RenderCopy(renderer, b9, NULL, &b9Rect);
-				}
-				else if(bulletNum = 8) {
-					SDL_RenderCopy(renderer, b8, NULL, &b8Rect);
-				}
-				else if(bulletNum = 7) {
-					SDL_RenderCopy(renderer, b7, NULL, &b7Rect);
-				}
-				else if(bulletNum = 6) {
-					SDL_RenderCopy(renderer, b6, NULL, &b6Rect);
-				}
-				else if(bulletNum = 5) {
-					SDL_RenderCopy(renderer, b5, NULL, &b5Rect);
-				}
-				else if(bulletNum = 4) {
-					SDL_RenderCopy(renderer, b4, NULL, &b4Rect);
-				}
-				else if(bulletNum = 3) {
-					SDL_RenderCopy(renderer, b3, NULL, &b3Rect);
-				}
-				else if(bulletNum = 2) {
-					SDL_RenderCopy(renderer, b2, NULL, &b2Rect);
-				}
-				else if(bulletNum = 1) {
-					SDL_RenderCopy(renderer, b1, NULL, &b1Rect);
-				}
-				else if(bulletNum = 0) {
-					SDL_RenderCopy(renderer, bHud, NULL, &bHudRect);*/
-			//	}
+				///////  BULLET HUD GRAPHICS //////////////////////////////////////////////
+				//if (bulletNum = 12) {
+				//	SDL_RenderCopy(renderer, b12, NULL, &b12Rect);
+				//}
+				//else if (bulletNum = 11) {
+				//	SDL_RenderCopy(renderer, b11, NULL, &b11Rect);
+				//}
+				//else if(bulletNum = 10) {
+				//	SDL_RenderCopy(renderer, b10, NULL, &b10Rect);
+				//}
+				//else if(bulletNum = 9) {
+				//	SDL_RenderCopy(renderer, b9, NULL, &b9Rect);
+				//}
+				//else if(bulletNum = 8) {
+				//	SDL_RenderCopy(renderer, b8, NULL, &b8Rect);
+				//}
+				//else if(bulletNum = 7) {
+				//	SDL_RenderCopy(renderer, b7, NULL, &b7Rect);
+				//}
+				//else if(bulletNum = 6) {
+				//	SDL_RenderCopy(renderer, b6, NULL, &b6Rect);
+				//}
+				//else if(bulletNum = 5) {
+				//	SDL_RenderCopy(renderer, b5, NULL, &b5Rect);
+				//}
+				//else if(bulletNum = 4) {
+				//	SDL_RenderCopy(renderer, b4, NULL, &b4Rect);
+				//}
+				//else if(bulletNum = 3) {
+				//	SDL_RenderCopy(renderer, b3, NULL, &b3Rect);
+				//}
+				//else if(bulletNum = 2) {
+				//	SDL_RenderCopy(renderer, b2, NULL, &b2Rect);
+				//}
+				//else if(bulletNum = 1) {
+				//	SDL_RenderCopy(renderer, b1, NULL, &b1Rect);
+				//}
+				//else if(bulletNum = 0) {
+				//	SDL_RenderCopy(renderer, bHud, NULL, &bHudRect);
+				//}
 
 				//draw the pruple UI
 				if (haveBag1)
@@ -1712,16 +1710,19 @@ int main(int argc, char* argv[]) {
 				bandit4.Draw(renderer);
 
 
-				//update the pool of explosions
-				for (int i = 0; i < explodeList.size(); i++) {
-
-					//check to see if active
-					if (explodeList[i].active = true) {
-						//draw explosion
-						explodeList[i].Draw(renderer);
-					}
+			
+				if (ex1.active = true && turret1.e1K == true) {
+					ex1.Draw(renderer);
 				}
-
+				if (ex2.active = true && turret2.e1K == true) {
+					ex2.Draw(renderer);
+				}
+				if (ex3.active = true && turret3.e1K == true) {
+					ex3.Draw(renderer);
+				}
+				if (ex4.active = true && turret4.e1K == true) {
+					ex4.Draw(renderer);
+				}
 				//present new buffer to the screen
 				SDL_RenderPresent(renderer);
 			}// ends play screen
@@ -1734,6 +1735,11 @@ int main(int argc, char* argv[]) {
 			Level2 = true;
 
 			player2.Reset();
+
+			ex5.active = false;
+			ex6.active = false;
+			ex7.active = false;
+			ex8.active = false;
 
 			while(Level2)
 			{
@@ -1906,73 +1912,46 @@ int main(int argc, char* argv[]) {
 						player2.bulletList[i].Reset();
 						if(turret5.active == true){
 							turret5.RemoveHealth();
+							ex5.active = true;
 						}
 						break;
 					}
 
-				//	//bandit 1
-				//	if(SDL_HasIntersection(&bandit1.banditRect, &player1.bulletList[i].posRect)){
-				//		player1.bulletList[i].Reset();
-				//		if(bandit1.active == true){
-				//			bandit1.RemoveHealth();
-				//		}
-				//		break;
-				//	}
 
 					//turret 6
 					if(SDL_HasIntersection(&turret6.baseRect, &player2.bulletList[i].posRect)){
 						player2.bulletList[i].Reset();
 						if(turret6.active == true){
 							turret6.RemoveHealth();
+							ex6.active = true;
 						}
 						break;
 					}
 
-				//	//bandit 2
-				//	if(SDL_HasIntersection(&bandit2.banditRect, &player1.bulletList[i].posRect)){
-				//		player1.bulletList[i].Reset();
-				//		if(bandit2.active == true){
-				//			bandit2.RemoveHealth();
-				//		}
-				//		break;
-				//	}
+		
 
 					//turret 7
 					if(SDL_HasIntersection(&turret7.baseRect, &player2.bulletList[i].posRect)){
 						player2.bulletList[i].Reset();
 						if(turret7.active == true){
 							turret7.RemoveHealth();
+							ex7.active = true;
 						}
 						break;
 					}
 
-				//	//bandit 3
-				//	if(SDL_HasIntersection(&bandit3.banditRect, &player1.bulletList[i].posRect)){
-				//		player1.bulletList[i].Reset();
-				//		if(bandit3.active == true){
-				//			bandit3.RemoveHealth();
-				//		}
-				//		break;
-				//	}
-
+	
 
 					//turret 8
 					if(SDL_HasIntersection(&turret8.baseRect, &player2.bulletList[i].posRect)){
 						player2.bulletList[i].Reset();
 						if(turret8.active == true){
 							turret8.RemoveHealth();
+							ex8.active = true;
 						}
 						break;
 					}
 
-				//	//bandit 4
-				//	if(SDL_HasIntersection(&bandit4.banditRect, &player1.bulletList[i].posRect)){
-				//		player1.bulletList[i].Reset();
-				//		if(bandit4.active == true){
-				//			bandit4.RemoveHealth();
-				//		}
-				//		break;
-				//	}
 
 
 					//bandit 5
@@ -1987,29 +1966,6 @@ int main(int argc, char* argv[]) {
 
 				}
 
-
-
-
-
-				////check to see if the player has been hit by the enemy tank
-				//if(SDL_HasIntersection(&player1.posRect, &bandit1.banditRect)){
-				//	player1.enemyHit();
-				//}
-
-				////check to see if the player has been hit by the enemy tank
-				//if(SDL_HasIntersection(&player1.posRect, &bandit2.banditRect)){
-				//	player1.enemyHit();
-				//}
-
-				////check to see if the player has been hit by the enemy tank
-				//if(SDL_HasIntersection(&player1.posRect, &bandit3.banditRect)){
-				//	player1.enemyHit();
-				//}
-
-				////check to see if the player has been hit by the enemy tank
-				//if(SDL_HasIntersection(&player1.posRect, &bandit4.banditRect)){
-				//	player1.enemyHit();
-				//}
 
 				//check to see if the player has been hit by the enemy tank
 				if(SDL_HasIntersection(&player2.posRect, &bandit5.banditRect)){
@@ -2063,7 +2019,18 @@ int main(int argc, char* argv[]) {
 					gameState = WIN;
 				}
 
-
+				if (ex5.active = true && turret5.e1K == true) {
+					ex5.Update(deltaTime);
+				}
+				if (ex6.active = true && turret6.e1K == true) {
+					ex6.Update(deltaTime);
+				}
+				if (ex7.active = true && turret7.e1K == true) {
+					ex7.Update(deltaTime);
+				}
+				if (ex8.active = true && turret8.e1K == true) {
+					ex8.Update(deltaTime);
+				}
 
 				// ************************ START THE SDL DRAW PROCESS *****************
 				//clear the SDL_Render target
@@ -2101,6 +2068,19 @@ int main(int argc, char* argv[]) {
 
 
 				bandit5.Draw(renderer);
+
+				if (ex5.active = true && turret5.e1K == true) {
+					ex5.Draw(renderer);
+				}
+				if (ex6.active = true && turret6.e1K == true) {
+					ex6.Draw(renderer);
+				}
+				if (ex7.active = true && turret7.e1K == true) {
+					ex7.Draw(renderer);
+				}
+				if (ex8.active = true && turret8.e1K == true) {
+					ex8.Draw(renderer);
+				}
 
 				//present new buffer to the screen
 				SDL_RenderPresent(renderer);
